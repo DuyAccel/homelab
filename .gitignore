@@ -1,0 +1,6 @@
+secret*
+env
+*.tgz
+*.tar
+*.tar.gz
+Chart.lock

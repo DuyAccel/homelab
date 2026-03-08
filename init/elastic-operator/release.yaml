@@ -1,0 +1,5 @@
+chart: eck-operator
+repo: https://helm.elastic.co
+version: 3.2.0
+namespace: logging-stack
+releaseName: elastic-operator

@@ -1,0 +1,126 @@
+fullnameOverride: elastic-operator
+affinity: {}
+automountServiceAccountToken: true
+config:
+  caDir: ""
+  caRotateBefore: 24h
+  caValidity: 8760h
+  certificatesRotateBefore: 24h
+  certificatesValidity: 8760h
+  containerRegistry: docker.elastic.co
+  disableConfigWatch: false
+  elasticsearchClientTimeout: 180s
+  elasticsearchObservationInterval: 10s
+  enableLeaderElection: true
+  exposedNodeLabels:
+  - topology.kubernetes.io/.*
+  - failure-domain.beta.kubernetes.io/.*
+  ipFamily: ""
+  kubeClientTimeout: 60s
+  logVerbosity: "0"
+  maxConcurrentReconciles: "3"
+  metrics:
+    port: "0"
+    secureMode:
+      enabled: false
+      tls:
+        certificateSecret: ""
+  metricsPort: 0
+  policies: {}
+  setDefaultSecurityContext: auto-detect
+  ubiOnly: false
+  validateStorageClass: true
+createClusterScopedResources: true
+dnsConfig: {}
+dnsPolicy: ""
+eck-operator-crds:
+  global:
+    createOperatorNamespace: true
+    kubeVersion: 1.21.0
+    manifestGen: false
+env: []
+global:
+  createOperatorNamespace: true
+  kubeVersion: 1.21.0
+  manifestGen: false
+hostNetwork: false
+image:
+  fips: false
+  pullPolicy: IfNotPresent
+  repository: docker.elastic.co/eck/eck-operator
+  tag: null
+imagePullSecrets: []
+installCRDs: true
+kubeAPIServerIP: null
+managedNamespaces: []
+nameOverride: elastic-operator
+nodeSelector: {}
+podAnnotations: {}
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+podLabels: {}
+podMonitor:
+  annotations: {}
+  enabled: false
+  interval: 5m
+  labels: {}
+  podMetricsEndpointConfig: {}
+  podTargetLabels: []
+  scrapeTimeout: 30s
+podSecurityContext:
+  runAsNonRoot: true
+priorityClassName: ""
+refs:
+  enforceRBAC: false
+replicaCount: 1
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 150Mi
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+serviceAccount:
+  annotations: {}
+  automountServiceAccountToken: true
+  create: true
+  name: ""
+serviceMonitor:
+  caMountDirectory: /etc/prometheus/secrets/
+  caSecret: ""
+  enabled: true
+  insecureSkipVerify: true
+softMultiTenancy:
+  enabled: false
+statefulsetAnnotations: {}
+statefulsetLabels: {}
+telemetry:
+  disabled: false
+  distributionChannel: helm
+tolerations: []
+tracing:
+  config:
+    ELASTIC_APM_SERVER_TIMEOUT: 30s
+    ELASTIC_APM_SERVER_URL: http://localhost:8200
+  enabled: false
+volumeMounts: []
+volumes: []
+webhook:
+  caBundle: Cg==
+  certManagerCert: null
+  certsDir: /tmp/k8s-webhook-server/serving-certs
+  certsSecret: ""
+  enabled: true
+  failurePolicy: Ignore
+  manageCerts: true
+  namespaceSelector: {}
+  objectSelector: {}
+  port: 9443

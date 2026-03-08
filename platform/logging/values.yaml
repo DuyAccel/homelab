@@ -1,0 +1,128 @@
+gateway:
+  hostname: monitoring.homelab.local
+  name: internal
+  namespace: networking-stack
+  listener: https
+
+eck-stack:
+  eck-elasticsearch:
+    enabled: true
+    http:
+      tls:
+        selfSignedCertificate:
+          disabled: true
+    fullnameOverride: logging-elasticsearch
+    nodeSets:
+      - config:
+          cluster.name: homelab-elastic
+          node.roles:
+            - master
+            - data
+            - ingest
+          node.store.allow_mmap: false
+        count: 1
+        name: master
+        podTemplate:
+          spec:
+            containers:
+              - name: elasticsearch
+                resources:
+                  limits:
+                    cpu: 2
+                    memory: 4Gi
+
+        volumeClaimTemplates:
+          - metadata:
+              name: elasticsearch-data
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 50Gi
+
+  eck-kibana:
+    enabled: true
+    http:
+      tls:
+        selfSignedCertificate:
+          disabled: true
+    config:
+      server.basePath: /logging
+      server.publicBaseUrl: https://monitoring.homelab.local/logging
+    fullnameOverride: logging-kibana
+    spec:
+      elasticsearchRef:
+        name: logging-elasticsearch
+      podTemplate:
+        spec:
+          containers:
+            - env:
+                - name: NODE_OPTIONS
+                  value: --max-old-space-size=1536
+              name: kibana
+              resources:
+                limits:
+                  cpu: 1.5
+                  memory: 2Gi
+                requests:
+                  cpu: 0.5
+                  memory: 1Gi
+
+fluent-bit:
+  envFrom:
+    - secretRef:
+        name: fluent-bit-secret
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+  flush: 5
+
+  config:
+    customParsers: |
+      [PARSER]
+          Name docker_no_time
+          Format json
+          Time_Keep Off
+          Time_Key time
+          Time_Format %Y-%m-%dT%H:%M:%S.%L
+    filters: |
+      [FILTER]
+          Name kubernetes
+          Match kube.var.log.containers.*
+          Merge_Log On
+          Keep_Log Off
+          K8S-Logging.Parser On
+          K8S-Logging.Exclude On
+
+      [FILTER]
+          Name  rewrite_tag
+          Match kube.var.log.containers.*
+          Rule  $kubernetes['namespace_name'] ^(kube-system|networking-stack|storage)$ kube.infra true
+          Rule  $kubernetes['namespace_name'] ^(argocd|cert-manager)$ kube.platform true
+          Rule  $kubernetes['namespace_name'] ^.*$ kube.generic true
+    inputs: |
+      [INPUT]
+          Name  tail
+          Path  /var/log/containers/*.log
+          Exclude_Path  /var/log/containers/cilium-*.log,/var/log/containers/istio*.log,/var/log/containers/ztunnel-*.log
+          Tag   kube.*
+          Mem_Buf_Limit 10MB
+          Multiline.parser docker, cri
+          Skip_Long_Lines Off
+          Refresh_Interval  5
+    outputs: |
+      [OUTPUT]
+          Name es
+          Match kube.infra
+          Host logging-elasticsearch-es-http.logging-stack.svc
+          Port 9200
+          HTTP_User ${ES_USER}
+          HTTP_Passwd ${ES_PASSWD}
+          Logstash_Format Off
+          Suppress_Type_Name On
+          Replace_Dots On
+          Index logs-k8s-infra
+          Retry_Limit 3
+          Trace_Error On

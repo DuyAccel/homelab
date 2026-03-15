@@ -1,0 +1,36 @@
+gateway:
+  hostname: authen.homelab.local
+  name: internal
+  namespace: networking-stack
+  sectionName: https
+keycloakx:
+  replicas: 1
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: "true"
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/control-plane
+    operator: Exists
+  command:
+  - /opt/keycloak/bin/kc.sh
+  - start
+  - --http-port=8080
+  - --hostname-strict=false
+  - --proxy-headers=xforwarded
+  proxy:
+    enabled: true
+    http:
+      enabled: true
+    mode: forwarded
+  extraEnvFrom: |
+    - secretRef:
+        name: keycloakx-secret
+    - configMapRef:
+        name: keycloakx-env
+  extraVolumeMounts: |
+    - name: keycloak-data
+      mountPath: /opt/keycloak/data
+  extraVolumes: |
+    - name: keycloak-data
+      persistentVolumeClaim:
+        claimName: keycloak-data

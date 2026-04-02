@@ -1,7 +1,0 @@
-apiVersion: v2
-name: internal-authen
-version: 0.0.0
-dependencies:
-  - name: keycloakx
-    version: 7.1.5
-    repository: oci://ghcr.io/codecentric/helm-charts

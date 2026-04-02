@@ -1,10 +1,8 @@
-# platform/authen/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: cluster-authentication
 
 resources:
   - namespace.yaml
-  - helmrepository.yaml
-  - secret.yaml
-  - helmrelease.yaml
-  - httproute.yaml
+  - helm.yaml
+  - values.yaml

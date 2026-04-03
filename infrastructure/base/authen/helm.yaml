@@ -1,11 +1,11 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
   name: codecentric
   namespace: flux-system
 spec:
-  interval: 1h0m0s
+  interval: 7d
   type: oci
   url: oci://ghcr.io/codecentric/helm-charts
 ---
@@ -20,10 +20,10 @@ spec:
       chart: keycloax
       reconcileStrategy: ChartVersion
       sourceRef:
-        kind: HelmRepository
+        kind: OCIRepository
         name: codecentric
       version: 7.1.5
-  interval: 30m0s
+  interval: 3d
   valuesFrom:
     - kind: ConfigMap
       name: cluster-authen-values

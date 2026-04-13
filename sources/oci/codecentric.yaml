@@ -5,6 +5,6 @@ metadata:
   name: codecentric
   namespace: flux-system
 spec:
-  interval: 7d
+  interval: 168h
   url: oci://ghcr.io/codecentric/helm-charts
 

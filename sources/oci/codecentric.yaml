@@ -6,6 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 7d
-  type: oci
   url: oci://ghcr.io/codecentric/helm-charts
 

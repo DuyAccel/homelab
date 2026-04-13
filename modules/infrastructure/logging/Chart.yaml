@@ -1,0 +1,11 @@
+apiVersion: v2
+name: efk
+version: 0.0.0
+
+dependencies:
+  - name: fluent-bit
+    version: 0.56.0
+    repository: "oci://ghcr.io/fluent/helm-charts"
+  - name: eck-stack
+    version: 0.18.0
+    repository: "https://helm.elastic.co"

@@ -1,0 +1,120 @@
+global:
+  istioNamespace: networking-stack
+  variant: distroless
+base: {}
+cni:
+  ambient:
+    enabled: true
+  cniBinDir: /var/lib/rancher/k3s/data/cni
+  cniConfDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
+gateway: {}
+istiod:
+  enabled: true
+  global:
+    istioNamespace: networking-stack
+    variant: distroless
+  meshConfig:
+    accessLogFile: /dev/stdout
+    defaultConfig:
+      gatewayTopology:
+        proxyProtocol: {}
+      interceptionMode: TPROXY
+  profile: ambient
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+ztunnel:
+  profile: ambient
+  resourceName: ztunnel
+
+customGateway:
+  gateways:
+    - name: internal
+      namespace: networking-stack
+      infrastructure: gateway-ha
+      redirectHTTPToHTTPS: true
+
+      service:
+        type: NodePort
+        externalTrafficPolicy: Local
+        ports:
+          - name: http2
+            port: 80
+            nodePort: 30080
+          - name: https
+            port: 443
+            nodePort: 30443
+
+      listeners:
+        - name: http2
+          port: 80
+          protocol: HTTP
+          routeExposure:
+            - internal
+            - both
+
+        - name: https
+          port: 443
+          protocol: HTTPS
+          tlsSecret: homelab-local-tls
+          routeExposure: 
+            - internal
+            - both
+
+    - name: external
+      namespace: networking-stack
+      infrastructure: gateway-ha
+      redirectHTTPToHTTPS: true
+
+      annotations:
+        cert-manager.io/cluster-issuer: cloudflare-duynch.com
+
+      service:
+        type: NodePort
+        externalTrafficPolicy: Local
+        ports:
+          - name: http2
+            port: 80
+            nodePort: 30090
+          - name: https
+            port: 443
+            nodePort: 30453
+
+      listeners:
+        - name: http2
+          port: 80
+          protocol: HTTP
+          routeExposure:
+            - external
+            - both
+
+        - name: https-duynch
+          hostname: duynch.com
+          port: 443
+          protocol: HTTPS
+          tlsSecret: duynch-com-tls
+          routeExposure: 
+            - external
+            - both
+
+        - name: https-wildcard-duynch
+          hostname: "*.duynch.com"
+          port: 443
+          protocol: HTTPS
+          tlsSecret: duynch-com-tls
+          routeExposure: 
+            - external
+            - both
+
+  infrastructures:
+    gateway-ha:
+      deployment:
+        spec:
+          template:
+            spec:
+              tolerations:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+                  effect: NoSchedule
+

@@ -1,0 +1,25 @@
+clusterIssuers:
+  - name: cloudflare-duynch.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeyName: letsencrypt-prod
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              key: api-token
+              name: cloudflare-apitoken-secret
+            email: nguyenchauhieuduy@outlook.com
+        selector:
+          dnsNames:
+            - duynch.com
+            - "*.duynch.com"
+
+
+cert-manager:
+  crds:
+    enabled: true
+
+  config:
+    apiVersion: controller.config.cert-manager.io/v1alpha1
+    kind: ControllerConfiguration
+    enableGatewayAPI: true

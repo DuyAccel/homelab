@@ -1,0 +1,16 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keycloakx
+spec:
+  chart:
+    spec:
+      chart: keycloakx
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: OCIRepository
+        name: codecentric
+      version: 7.1.5
+  interval: 3d
+  valuesFrom: []

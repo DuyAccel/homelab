@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authen-values-base
+data:
+  values.yaml: |-
+    replicas: 1
+    command:
+    - /opt/keycloak/bin/kc.sh
+    - start
+    - --http-port=8080
+    - --hostname-strict=false
+    - --proxy-headers=xforwarded
+    http:
+      relativePath: "/"
+    proxy:
+      enabled: true
+      http:
+        enabled: true
+      mode: forwarded
+

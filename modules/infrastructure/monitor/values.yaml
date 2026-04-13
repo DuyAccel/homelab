@@ -1,0 +1,441 @@
+gateway:
+  hostname: "monitoring.homelab.local"
+  name: internal
+  namespace: networking-stack
+  listener: https
+
+kube-prometheus-stack:
+  defaultRules:
+    create: true
+    rules:
+      alertmanager: false # unlikely errors in 1 replica setup
+      etcd: false
+      general: false # no watchdog/scrape failure IDEALLY SET THIS UP
+      k8s: true
+      k8sContainerMemorySwap: false # dropped container_memory_swap
+      k8sContainerMemoryCache: true # used in node compute dashboard
+      k8sPodOwner: true # used in good dashboards
+      kubeApiserver: false # disable ALL apiserver stuff
+      kubeControllerManager: false
+      kubelet: false # dumb pleg rules
+      kubePrometheusGeneral: false # not using up1 / up0 anyway
+      kubePrometheusNodeRecording: false # for node overview dashboards
+      kubernetesApps: true
+      kubernetesResources: false # don't care about quotas atm
+      kubernetesStorage: true
+      kubernetesSystem: false
+      kubeScheduler: false
+      kubeSchedulerAlerting: false
+      kubeStateMetrics: true
+      network: false # don't care bout network flaps atm
+      node: false # don't need these to visualise them - default boards are bad
+      nodeExporterAlerting: false
+      nodeExporterRecording: false
+      prometheus: true # nice safety
+      prometheusOperator: true # nice safety when not using admission webhook
+      windows: false # wat
+    disabled:
+      # some of the heavier prom alerts that we don't need
+      PrometheusNotIngestingSamples: true
+      PrometheusRemoteStorageFailures: true
+      PrometheusRemoteWriteDesiredShards: true
+      PrometheusRemoteWriteBehind: true
+
+  alertmanager:
+    enabled: true # override
+    enableFeatures: ["receiver-name-in-metrics"]
+    alertmanagerSpec:
+      replicas: 1
+      useExistingSecret: true # prevents secret from being created (:
+      alertmanagerConfiguration:
+        name: alertmanager-config
+    serviceMonitor:
+      metricRelabelings:
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "^go_.*"
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "^.*bucket.*"
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+    tplConfig: false
+  cleanPrometheusOperatorObjectNames: true
+
+  coreDns:
+    enabled: false
+
+  global:
+    rbac:
+      create: true
+      pspEnabled: false
+
+  grafana:
+    enabled: true
+    admin:
+      existingSecret: grafana-credential
+      passwordKey: admin-password
+      userKey: admin-user
+    defaultDashboardsEnabled: true
+    defaultDashboardsInterval: 5m
+    defaultDashboardsTimezone: Asia/Ho_Chi_Minh
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - defaultDatasourceScrapeInterval: 60s
+            httpMethod: POST
+            isDefault: true
+            name: Prometheus
+            type: prometheus
+            uid: Prometheus
+            url: http://monitor-kube-prometheus-st-prometheus:9090/
+    global:
+      rbac:
+        create: true
+        pspEnabled: false
+    grafana.ini:
+      server:
+        domain: monitoring.homelab.local
+        root_url: "%(protocol)s://%(domain)s/monitor"
+        serve_from_sub_path: true
+      alerting:
+        enabled: false
+      analytics:
+        check_for_updates: false
+      auth.anonymous:
+        enabled: Viewer
+      unified_alerting:
+        enabled: false
+
+    rbac:
+      create: true
+      enabled: true
+      namespaced: true
+
+    serviceMonitor:
+      enabled: true
+      metricRelabelings:
+        - action: drop
+          regex: (grafana_http_|grafana_live_|grafana_frontend_|grafana_access|grafana_alerting|grafan_folder|grafana_plugin|grafana_feature_toggles).*
+          sourceLabels:
+            - __name__
+        - action: drop
+          regex: grafana.*_bucket
+          sourceLabels:
+            - __name__
+        - action: drop
+          regex: ^go_.*
+          sourceLabels:
+            - __name__
+      path: /metrics
+      scheme: http
+      scrapeTimeout: 30s
+    shareProcessNamespace: false
+    sidecar:
+      enabled: true
+      dashboards:
+        enabled: true
+        initDashboards: false
+        provider:
+          allowUiUpdates: true
+          name: sidecarProvider
+          orgid: 1
+          type: file
+        resource: configmap
+        searchNamespace: monitoring-stack
+      datasources:
+        enabled: false
+
+    smtp:
+      passwordKey: password
+      userKey: user
+
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+    useStatefulSet: false
+
+  kube-state-metrics:
+    #extraArgs: ["-v"]
+    # Extra rbac for flux metrics
+    rbac:
+      create: true
+      # For customResourceState for flux metrics
+      # https://fluxcd.io/flux/monitoring/custom-metrics/
+      extraRules:
+        - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+          resources: ["kustomizations"]
+          verbs: ["list", "watch"]
+        - apiGroups: ["source.toolkit.fluxcd.io"]
+          resources: ["gitrepositories", "ocirepositories"]
+          verbs: ["list", "watch"]
+    # Tell KSM to scrape flux conditions as metrics
+    customResourceState:
+      enabled: true
+    # Opt-out of collectors we do not care about metrics for
+    # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-state-metrics/values.yaml#L348C1-L377C1
+    collectors:
+      #- certificatesigningrequests
+      #- configmaps
+      - cronjobs
+      - daemonsets
+      - deployments
+      #- endpoints
+      - horizontalpodautoscalers
+      #- ingresses
+      - jobs
+      #- leases
+      #- limitranges
+      - mutatingwebhookconfigurations
+      - namespaces
+      #- networkpolicies
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      #- poddisruptionbudgets
+      - pods
+      - replicasets
+      #- replicationcontrollers
+      #- resourcequotas
+      #- secrets
+      #- services
+      - statefulsets
+      - storageclasses
+      - validatingwebhookconfigurations
+      - volumeattachments
+
+    prometheus:
+      monitor:
+        metricRelabelings:
+          # Drop less useful pod metrics (5x per pod..)
+          - sourceLabels: [__name__]
+            regex: "kube_pod_status_reason"
+            action: drop
+          - sourceLabels: [__name__]
+            regex: "kube_pod_tolerations|kube_pod_status_qos_class|kube_pod_scheduler|kube_pod_service_account|kube_pod_status_scheduled_time"
+            action: drop
+          - sourceLabels: [__name__]
+            regex: "kube_replicaset_(status|spec|metadata|created).*"
+            action: drop
+
+  kubeApiServer:
+    enabled: false
+
+  kubeControllerManager:
+    enabled: false
+  kubeDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeStateMetrics:
+    enabled: true
+
+  kubelet:
+    enabled: true
+    serviceMonitor:
+      interval: 60s
+      # we want cadvisor (cpu/memory) metrics only
+      probes: false
+      cAdvisor: true
+      cAdvisorMetricRelabelings:
+        - sourceLabels: [__name__]
+          action: drop
+          regex: scheduler_.*
+        - sourceLabels: [__name__]
+          action: drop
+          regex: apiserver_.*
+        # Default drops from KPS
+        # Drop less useful container CPU metrics.
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "container_cpu_(cfs_throttled_seconds_total|load_average_10s|system_seconds_total|user_seconds_total)"
+        # Drop less useful container / always zero filesystem metrics.
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "container_fs_(io_current|io_time_seconds_total|io_time_weighted_seconds_total|reads_merged_total|sector_reads_total|sector_writes_total|writes_merged_total)"
+        # Drop less useful / always zero container memory metrics.
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "container_memory_(mapped_file|swap)"
+        # Drop less useful container process metrics.
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "container_(file_descriptors|tasks_state|threads_max)" # could drop _sockets and _processes here but it's interesting
+        # Drop container spec metrics that overlap with kube-state-metrics.
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "container_spec.*"
+        # Drop cgroup metrics with no pod.
+        - sourceLabels: [id, pod]
+          action: drop
+          regex: ".+;"
+        # END DEFAULT DROPS
+        # Extra drops
+        # Drop less useful container metrics.
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "container_(memory_failures|last_seen|memory_kernel|memory_failcnt|blkio_device|oom_events|start_time|threads|ulimits_soft).*"
+      metricRelabelings:
+        # Drop almost all kubelet metrics, only want cpu/memory usage
+        - sourceLabels: [__name__]
+          regex: "(apiserver_|etcd_|workqueue_|kubernetes_feature_|endpoint_slice_|node_authorizer_|storage_|kubeproxy_|aggregator_|authentication_|scheduler_|apiextensions_|rest_client_).*"
+          action: drop
+        # more metrics from kubelet
+        - sourceLabels: [__name__]
+          regex: "(job_controller_|cronjob_controller_|authorization_|field_validation_).*"
+          action: drop
+        # Drop kubelet_ metrics except kubelet_volume containing usage data for PVCs
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "(kubelet_runtime_|kubelet_http_|kubelet_pod_|kube_router|kubelet_evented_|kubelet_topology_|kubelet_pleg_|kubelet_node_startup_).*"
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "^go_.*"
+        # DROP ALL BUCKETS (not used in anything except kubelet dashboard)
+        - sourceLabels: [__name__]
+          regex: ".*bucket.*"
+          action: drop
+        - sourceLabels: [__name__]
+          regex: "(watch_cache_capacity|volume_operation_).*"
+          action: drop
+
+  kubernetesServiceMonitors:
+    enabled: true
+
+  nodeExporter:
+    enabled: true
+    forceDeployDashboards: false
+    operatingSystems:
+      aix:
+        enabled: false
+      darwin:
+        enabled: false
+      linux:
+        enabled: true
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      metricRelabelings:
+        - sourceLabels: [__name__]
+          regex: "prometheus_http_(request|response).*"
+          action: drop
+        - sourceLabels: [__name__]
+          regex: "prometheus_tsdb_(compaction_chunk|compaction_duration).*"
+          action: drop
+        - sourceLabels: [__name__]
+          regex: "(net_conntrack).*"
+          action: drop
+        - sourceLabels: [__name__]
+          regex: "prometheus_sd_(consul|azure|kuma|nomad|linode).*"
+          action: drop
+        - sourceLabels: [__name__]
+          action: drop
+          regex: "^go_.*"
+
+    ## https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    prometheusSpec:
+      logLevel: debug
+      ## ref: https://prometheus.io/docs/prometheus/latest/querying/api/#tsdb-admin-apis
+      enableAdminAPI: true
+      enableFeatures:
+        - exemplar-storage
+        #- extra-scrape-metrics # only kind of useful
+        #- native-histograms # seems to kill KSM metrics
+      #- created-timestamp-zero-ingestion # crashes prom
+      #- old-ui # actually better still, but w/e
+      # disabled RW as not using tempo metrics generator
+      enableRemoteWriteReceiver: false
+
+      retention: 7d
+      walCompression: true
+      retentionSize: 10GB
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: longhorn
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 15Gi
+      # don't need data super often
+      scrapeInterval: 60s
+      evaluationInterval: 60s
+      replicas: 2
+      serviceDiscoveryRole: EndpointSlice
+      # no operator enrichment
+      prometheusExternalLabelNameClear: true
+      replicaExternalLabelNameClear: true
+      # Want Prometheus to import ALL Rules + Monitors
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+      scrapeConfigSelectorNilUsesHelmValues: false
+
+  prometheus-node-exporter:
+    nameOverride: "node-exporter"
+    podLabels:
+      job: node-exporter
+    prometheus:
+      monitor:
+        metricRelabelings:
+          # we are not debugging go services
+          - sourceLabels: [__name__]
+            regex: "^go_.*"
+            action: drop
+          # drop some we don't use / need
+          - sourceLabels: [__name__]
+            regex: "^node_cpu_guest_seconds_total"
+            action: drop
+          - sourceLabels: [__name__]
+            regex: "^node_network_(flags|device_id|dormant|iface_link_mode|transmit_queue_length|carrier.*)"
+            action: drop
+          - sourceLabels: [__name__]
+            regex: "^node_scrape_(collector_duration_seconds)"
+            action: drop
+          - sourceLabels: [__name__]
+            regex: "^node_filesystem_(readonly|device_error|files).*"
+            action: drop
+          - sourceLabels: [__name__]
+            regex: "^node_(cooling|schedstat|cpu_scaling).*"
+            action: drop
+
+  prometheusOperator:
+    enabled: true
+    # use new-non deprecated endpoints for discovery (needs similar flag for prometheusSpec)
+    kubeletEndpointsEnabled: false
+    kubeletEndpointSliceEnabled: true
+
+    ## If true, the operator will create and maintain a service for scraping kubelets
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/helm/prometheus-operator/README.md
+    kubeletService:
+      enabled: enabled
+      namespace: kube-system
+    serviceMonitor:
+      selfMonitor: true
+      metricRelabelings:
+        # we can look at this if things start to fail don't need histograms
+        - sourceLabels: [__name__]
+          regex: "prometheus_operator_(kubernetes_client|reconcile_duration).*"
+          action: drop
+        # we are not debugging go services
+        - sourceLabels: [__name__]
+          regex: "go_sched_.*_bucket"
+          action: drop
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists

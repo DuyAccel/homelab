@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../modules/infrastructure/authen
+  - values.yaml
+
+patches:
+  - target:
+      kind: HelmRelease
+      name: keycloakx
+    patch: |
+      - op: add
+        path: /spec/valuesFrom/-
+        value:
+          kind: ConfigMap
+          name: authen-values-base
+          valuesKey: values.yaml
+

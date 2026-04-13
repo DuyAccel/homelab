@@ -1,0 +1,31 @@
+namespaceOverride: networking-stack
+cilium:
+  cni:
+    confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
+    exclusive: false
+    hostConfDirMountPath: /host/var/lib/rancher/k3s/agent/etc/cni/net.d
+  devices: private-cloud
+  gatewayAPI:
+    enabled: true
+  ipam:
+    operator:
+      clusterPoolIPv4MaskSize: 24
+      clusterPoolIPv4PodCIDRList:
+        - 10.42.0.0/16
+  ipv4:
+    enabled: true
+  ipv6:
+    enabled: false
+  kubeProxyReplacement: true
+  nodePort:
+    addresses:
+      - 160.191.175.165/32
+    enabled: true
+  operator:
+    nodeSelector:
+      kubernetes.io/os: linux
+      node-role.kubernetes.io/control-plane: "true"
+    replicas: 1
+  socketLB:
+    enabled: true
+    hostNamespaceOnly: true

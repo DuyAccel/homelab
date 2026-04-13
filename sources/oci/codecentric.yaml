@@ -1,12 +1,13 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
-  name: codecentric
+  name: keycloakx
   namespace: flux-system
 spec:
   interval: 168h
-  url: oci://ghcr.io/codecentric/helm-charts
+  url: oci://ghcr.io/codecentric/helm-charts/keycloakx
+  ref:
+    tag: "7.1.9"
   secretRef:
     name: oci-registry-creds
-

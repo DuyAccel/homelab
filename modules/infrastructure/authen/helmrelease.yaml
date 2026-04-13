@@ -6,11 +6,11 @@ metadata:
 spec:
   chart:
     spec:
-      chart: keycloakx
-      reconcileStrategy: ChartVersion
+      chart: .
+      reconcileStrategy: Revision
       sourceRef:
         kind: OCIRepository
-        name: codecentric
-      version: 7.1.5
+        name: keycloakx
+        namespace: flux-system
   interval: 3d
   valuesFrom: []

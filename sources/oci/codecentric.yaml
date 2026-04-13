@@ -7,4 +7,8 @@ metadata:
 spec:
   interval: 168h
   url: oci://ghcr.io/codecentric/helm-charts
+  ref:
+    tag: latest
+  secretRef:
+    name: oci-registry-creds
 

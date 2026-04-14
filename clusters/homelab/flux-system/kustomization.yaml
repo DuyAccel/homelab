@@ -30,7 +30,7 @@ patches:
   - patch: |
       - op: add
         path: /spec/serviceAccountName
-        value: flux-deployer
+        value: kustomize-controller 
     target:
       kind: Kustomization
       name: "flux-system"

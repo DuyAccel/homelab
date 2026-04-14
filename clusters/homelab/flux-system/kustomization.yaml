@@ -27,10 +27,10 @@ patches:
     target:
       kind: Deployment
       name: "(kustomize-controller|helm-controller)"
-  - patch: |
-      - op: add
-        path: /spec/serviceAccountName
-        value: kustomize-controller
-    target:
-      kind: Kustomization
-      name: "flux-system"
+#   - patch: |
+#       - op: add
+#         path: /spec/serviceAccountName
+#         value: kustomize-controller
+#     target:
+#       kind: Kustomization
+#       name: "flux-system"

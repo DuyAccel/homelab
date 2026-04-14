@@ -6,9 +6,8 @@ metadata:
 spec:
   chart:
     spec:
-      chart: .
       reconcileStrategy: Revision
-      sourceRef:
+      chartRef:
         kind: OCIRepository
         name: keycloakx
         namespace: flux-system

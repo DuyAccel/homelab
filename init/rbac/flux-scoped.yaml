@@ -47,6 +47,12 @@ rules:
     verbs: ["get", "list", "watch", "create", "patch", "update"]
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flux-deployer
+  namespace: flux-system
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -57,5 +63,5 @@ roleRef:
   name: flux-reconciler
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: flux-deployer
     namespace: flux-system

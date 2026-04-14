@@ -4,12 +4,9 @@ kind: HelmRelease
 metadata:
   name: keycloakx
 spec:
-  chart:
-    spec:
-      reconcileStrategy: Revision
-      chartRef:
-        kind: OCIRepository
-        name: keycloakx
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: keycloakx
+    namespace: flux-system
   interval: 72h
   valuesFrom: []

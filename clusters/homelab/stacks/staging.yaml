@@ -17,3 +17,7 @@ spec:
   wait: true
   timeout: 5m
   serviceAccountName: flux-deployer
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

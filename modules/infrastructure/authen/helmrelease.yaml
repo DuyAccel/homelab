@@ -12,5 +12,5 @@ spec:
         kind: OCIRepository
         name: keycloakx
         namespace: flux-system
-  interval: 3d
+  interval: 72h
   valuesFrom: []

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storage-values-base
+data:
+  longhorn-values.yaml: |-
+    longhorn:
+      csi:
+        kubeletRootDir: /var/lib/kubelet
+      defaultSettings:
+        autoSalvage: true
+        defaultDataPath: /data/longhorn
+        defaultReplicaCount: "2"
+        disableRevisionCounter: '{"v1":"true"}'
+        nodeDownPodDeletionPolicy: do-nothing
+        priorityClass: longhorn-critical
+        storageMinimalAvailablePercentage: "10"
+        storageOverProvisioningPercentage: "150"
+        systemManagedComponentsNodeSelector: longhorn-storage:true
+      longhornDriver:
+        replicas: 1
+      longhornManager:
+        replicas: 1

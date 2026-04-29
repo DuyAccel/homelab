@@ -5,7 +5,3 @@ metadata:
 data:
   longhorn-values.yaml: |-
     namespaceOverride: "storage"
-    gateway:
-      name: internal
-      namespace: networking-stack
-      listener: https

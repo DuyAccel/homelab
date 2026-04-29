@@ -4,6 +4,7 @@ namespace: storage
 
 resources:
   - ../../base/storage
+  - httproute.yaml
   - values.yaml
 
 patches:

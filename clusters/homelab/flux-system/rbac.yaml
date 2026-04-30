@@ -52,6 +52,11 @@ rules:
     resources: ["*"]
     verbs: ["*"]
 
+  # Quản lý cert-manager resources
+  - apiGroups: ["cert-manager.io"]
+    resources: ["*"]
+    verbs: ["*"]
+
 ---
 apiVersion: v1
 kind: ServiceAccount

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: networking-values-prod
+data:
+  cilium-values.yaml: |-
+    gatewayAPI:
+      enabled: false
+    nodePort:
+      addresses:
+        - 160.191.175.165/32
+      enabled: true
+    devices: private-cloud

@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - keycloakx.yaml
   - cilium.yaml
+  - cert-manager.yaml

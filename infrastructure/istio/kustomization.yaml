@@ -1,0 +1,54 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../modules/infrastructure/istio/base
+  - ../../modules/infrastructure/istio/cni
+  - ../../modules/infrastructure/istio/ztunnel
+  - values.yaml
+
+patches:
+  - target:
+      kind: HelmRelease
+      name: istio-base
+    patch: |
+      - op: add
+        path: /spec/releaseName
+        value: istio-base
+      - op: add
+        path: /spec/targetNamespace
+        value: networking-stack
+
+  - target:
+      kind: HelmRelease
+      name: istio-cni
+    patch: |
+      - op: add
+        path: /spec/releaseName
+        value: istio-cni
+      - op: add
+        path: /spec/targetNamespace
+        value: networking-stack
+      - op: add
+        path: /spec/valuesFrom/-
+        value:
+          kind: ConfigMap
+          name: istio-values
+          valuesKey: cni-values.yaml
+
+  - target:
+      kind: HelmRelease
+      name: istio-ztunnel
+    patch: |
+      - op: add
+        path: /spec/releaseName
+        value: istio-ztunnel
+      - op: add
+        path: /spec/targetNamespace
+        value: networking-stack
+      - op: add
+        path: /spec/valuesFrom/-
+        value:
+          kind: ConfigMap
+          name: istio-values
+          valuesKey: ztunnel-values.yaml

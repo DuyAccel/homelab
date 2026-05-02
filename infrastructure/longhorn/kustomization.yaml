@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../modules/infrastructure/longhorn
+  - httproute.yaml
+  - values.yaml
+
+patches:
+  - target:
+      kind: HelmRelease
+      name: longhorn
+    patch: |
+      - op: add
+        path: /spec/releaseName
+        value: longhorn
+      - op: add
+        path: /spec/targetNamespace
+        value: storage
+      - op: add
+        path: /spec/valuesFrom/-
+        value:
+          kind: ConfigMap
+          name: longhorn-values
+          valuesKey: longhorn-values.yaml

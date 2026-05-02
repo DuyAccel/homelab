@@ -16,7 +16,7 @@ data:
       enabled: true
     cniBinDir: /var/lib/rancher/k3s/data/cni
     cniConfDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
-  istiod-values: |-
+  istiod-values.yaml: |-
     enabled: true
     global:
       istioNamespace: networking-stack

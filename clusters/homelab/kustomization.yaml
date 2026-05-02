@@ -6,3 +6,4 @@ resources:
   - ../../sources
   - stacks/staging.yaml
   - stacks/production.yaml
+  - infrastructure.yaml

@@ -4,6 +4,7 @@ metadata:
   name: longhorn-values
 data:
   longhorn-values.yaml: |-
+    namespaceOverride: "storage"
     csi:
       kubeletRootDir: /var/lib/kubelet
     defaultSettings:

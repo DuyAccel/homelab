@@ -4,12 +4,37 @@ kind: ConfigMap
 metadata:
   name: istio-values
 data:
+  base-values.yaml: |-
+    global:
+      istioNamespace: networking-stack
+      variant: distroless
   cni-values.yaml: |-
+    global:
+      istioNamespace: networking-stack
+      variant: distroless
     ambient:
       enabled: true
     cniBinDir: /var/lib/rancher/k3s/data/cni
     cniConfDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
-
+  istiod-values: |-
+    enabled: true
+    global:
+      istioNamespace: networking-stack
+      variant: distroless
+    meshConfig:
+      accessLogFile: /dev/stdout
+      defaultConfig:
+        gatewayTopology:
+          proxyProtocol: {}
+        interceptionMode: TPROXY
+    profile: ambient
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
   ztunnel-values.yaml: |-
+    global:
+      istioNamespace: networking-stack
+      variant: distroless
     profile: ambient
     resourceName: ztunnel

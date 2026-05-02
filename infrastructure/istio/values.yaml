@@ -33,8 +33,7 @@ data:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
   ztunnel-values.yaml: |-
-    global:
-      istioNamespace: networking-stack
-      variant: distroless
+    istioNamespace: networking-stack
+    variant: distroless
     profile: ambient
     resourceName: ztunnel

@@ -19,6 +19,8 @@ data:
       enabled: false
     envoy:
       enabled: false
+    cni:
+      exclusive: false
 
     kubeProxyReplacement: true
     k8sServiceHost: 192.168.10.50

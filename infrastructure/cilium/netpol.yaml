@@ -1,95 +1,95 @@
----
-apiVersion: "cilium.io/v2"
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: "allow-public-services"
-spec:
-  nodeSelector:
-    matchLabels:
-      node-role.kubernetes.io/control-plane: "true"
-  ingress:
-    - fromEntities:
-        - world
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
-            - port: "443"
-              protocol: TCP
-            - port: "51820"
-              protocol: UDP
----
-apiVersion: "cilium.io/v2"
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: "allow-nodeport"
-spec:
-  nodeSelector:
-    matchLabels: {}
-  ingress:
-    - fromEntities:
-        - world
-      toPorts:
-        - ports:
-            - port: "30080"
-              protocol: TCP
-            - port: "30090"
-              protocol: TCP
-            - port: "30443"
-              protocol: TCP
-            - port: "30453"
-              protocol: TCP
----
-apiVersion: "cilium.io/v2"
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: "allow-common-rules"
-spec:
-  nodeSelector:
-    matchLabels: {}
-  ingress:
-    - fromEntities:
-        - world
-      toPorts:
-        - ports:
-            - port: "22"
-              protocol: TCP
-    - icmps:
-        - fields:
-            - type: EchoRequest
-              family: IPv4
----
-apiVersion: "cilium.io/v2"
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: "allow-internal-mesh"
-spec:
-  nodeSelector:
-    matchLabels: {}
-  ingress:
-    - fromEntities:
-        - host
-        - remote-node
-        - health
-        - kube-apiserver
-        - cluster
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: "kube-system"
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: "networking-stack"
----
-apiVersion: "cilium.io/v2"
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: "allow-wireguard-mesh"
-spec:
-  nodeSelector:
-    matchLabels: {}
-  ingress:
-    - fromCIDR:
-        - 172.21.10.0/24
-        - 10.42.0.0/16
-  egress:
-    - toEntities:
-        - all
+# ---
+# apiVersion: "cilium.io/v2"
+# kind: CiliumClusterwideNetworkPolicy
+# metadata:
+#   name: "allow-public-services"
+# spec:
+#   nodeSelector:
+#     matchLabels:
+#       node-role.kubernetes.io/control-plane: "true"
+#   ingress:
+#     - fromEntities:
+#         - world
+#       toPorts:
+#         - ports:
+#             - port: "80"
+#               protocol: TCP
+#             - port: "443"
+#               protocol: TCP
+#             - port: "51820"
+#               protocol: UDP
+# ---
+# apiVersion: "cilium.io/v2"
+# kind: CiliumClusterwideNetworkPolicy
+# metadata:
+#   name: "allow-nodeport"
+# spec:
+#   nodeSelector:
+#     matchLabels: {}
+#   ingress:
+#     - fromEntities:
+#         - world
+#       toPorts:
+#         - ports:
+#             - port: "30080"
+#               protocol: TCP
+#             - port: "30090"
+#               protocol: TCP
+#             - port: "30443"
+#               protocol: TCP
+#             - port: "30453"
+#               protocol: TCP
+# ---
+# apiVersion: "cilium.io/v2"
+# kind: CiliumClusterwideNetworkPolicy
+# metadata:
+#   name: "allow-common-rules"
+# spec:
+#   nodeSelector:
+#     matchLabels: {}
+#   ingress:
+#     - fromEntities:
+#         - world
+#       toPorts:
+#         - ports:
+#             - port: "22"
+#               protocol: TCP
+#     - icmps:
+#         - fields:
+#             - type: EchoRequest
+#               family: IPv4
+# ---
+# apiVersion: "cilium.io/v2"
+# kind: CiliumClusterwideNetworkPolicy
+# metadata:
+#   name: "allow-internal-mesh"
+# spec:
+#   nodeSelector:
+#     matchLabels: {}
+#   ingress:
+#     - fromEntities:
+#         - host
+#         - remote-node
+#         - health
+#         - kube-apiserver
+#         - cluster
+#     - fromEndpoints:
+#         - matchLabels:
+#             k8s:io.kubernetes.pod.namespace: "kube-system"
+#         - matchLabels:
+#             k8s:io.kubernetes.pod.namespace: "networking-stack"
+# ---
+# apiVersion: "cilium.io/v2"
+# kind: CiliumClusterwideNetworkPolicy
+# metadata:
+#   name: "allow-wireguard-mesh"
+# spec:
+#   nodeSelector:
+#     matchLabels: {}
+#   ingress:
+#     - fromCIDR:
+#         - 172.21.10.0/24
+#         - 10.42.0.0/16
+#   egress:
+#     - toEntities:
+#         - all

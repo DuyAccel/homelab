@@ -17,7 +17,7 @@ patches:
         value: cilium
       - op: add
         path: /spec/targetNamespace
-        value: networking-stack
+        value: kube-system
       - op: add
         path: /spec/valuesFrom/-
         value:

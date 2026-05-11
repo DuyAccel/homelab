@@ -5,33 +5,57 @@ metadata:
   name: cilium-values
 data:
   cilium-values.yaml: |-
-    cni:
-      confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
-      exclusive: false
-      hostConfDirMountPath: /host/var/lib/rancher/k3s/agent/etc/cni/net.d
     ipam:
       operator:
-        clusterPoolIPv4MaskSize: 24
         clusterPoolIPv4PodCIDRList:
-          - 10.42.0.0/16
+          - 10.32.0.0/12
+        clusterPoolIPv4MaskSize: 24
+
     ipv4:
       enabled: true
     ipv6:
       enabled: false
+    gatewayAPI:
+      enabled: false
+    envoy:
+      enabled: false
+
     kubeProxyReplacement: true
+    k8sServiceHost: 192.168.10.50
+    k8sServicePort: 6443
+
     operator:
-      nodeSelector:
-        kubernetes.io/os: linux
-        node-role.kubernetes.io/control-plane: "true"
       replicas: 1
     socketLB:
       enabled: true
       hostNamespaceOnly: true
-
-    gatewayAPI:
-      enabled: false
-    nodePort:
-      addresses:
-        - 160.191.175.165/32
+    l2announcements:
       enabled: true
-    devices: private-cloud
+    externalIPs:
+      enabled: true
+    loadBalancer:
+      algorithm: maglev
+    bpf:
+      masquerade: true
+    securityContext:
+      capabilities:
+        ciliumAgent:
+          - CHOWN
+          - KILL
+          - NET_ADMIN
+          - NET_RAW
+          - IPC_LOCK
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - DAC_OVERRIDE
+          - FOWNER
+          - SETGID
+          - SETUID
+        cleanCiliumState:
+          - NET_ADMIN
+          - SYS_ADMIN
+          - SYS_RESOURCE
+    cgroup:
+      autoMount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup

@@ -4,9 +4,3 @@ kind: Namespace
 metadata:
   name: istio-system
 spec: {}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: longhorn-system
-spec: {}

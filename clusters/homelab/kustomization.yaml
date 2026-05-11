@@ -4,6 +4,6 @@ kind: Kustomization
 resources:
   - flux-system
   - ../../sources
-  - stacks/staging.yaml
-  - stacks/production.yaml
+  #   - stacks/staging.yaml
+  #   - stacks/production.yaml
   - infrastructure.yaml

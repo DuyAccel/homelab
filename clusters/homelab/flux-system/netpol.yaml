@@ -1,14 +1,14 @@
----
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: allow-all-traffic
-  namespace: flux-system
-spec:
-  endpointSelector: {}
-  ingress:
-    - fromEntities:
-        - all
-  egress:
-    - toEntities:
-        - all
+# ---
+# apiVersion: cilium.io/v2
+# kind: CiliumNetworkPolicy
+# metadata:
+#   name: allow-all-traffic
+#   namespace: flux-system
+# spec:
+#   endpointSelector: {}
+#   ingress:
+#     - fromEntities:
+#         - all
+#   egress:
+#     - toEntities:
+#         - all

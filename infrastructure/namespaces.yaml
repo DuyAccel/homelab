@@ -6,3 +6,11 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: longhorn-system
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+spec: {}

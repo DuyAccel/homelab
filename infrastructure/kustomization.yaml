@@ -6,4 +6,4 @@ resources:
   - namespaces.yaml
   - istio
   - gateway-api
-  #  - longhorn
+  - longhorn

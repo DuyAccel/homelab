@@ -4,19 +4,28 @@ metadata:
   name: longhorn-values
 data:
   longhorn-values.yaml: |-
-    namespaceOverride: "storage"
-    csi:
-      kubeletRootDir: /var/lib/kubelet
     defaultSettings:
+      guaranteedInstanceManagerCPU: '{"v1":"10","v2":"10"}'
+      storageOverProvisioningPercentage: "200"
+      storageMinimalAvailablePercentage: "15"
       autoSalvage: true
-      defaultDataPath: /data/longhorn
-      defaultReplicaCount: "2"
-      disableRevisionCounter: '{"v1":"true"}'
-      nodeDownPodDeletionPolicy: do-nothing
-      priorityClass: longhorn-critical
-      storageMinimalAvailablePercentage: "10"
-      storageOverProvisioningPercentage: "150"
+      replicaSoftAntiAffinity: true
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      autoCleanupSystemGeneratedSnapshot: true
+      concurrentReplicaRebuildPerNodeLimit: 1
       systemManagedComponentsNodeSelector: longhorn-storage:true
+
+    persistence:
+      defaultClassReplicaCount: 2
+      reclaimPolicy: Retain
+      migratable: false
+      disableRevisionCounter: "true"
+    csi:
+      attacherReplicaCount: 1
+      provisionerReplicaCount: 1
+      resizerReplicaCount: 1
+      snapshotterReplicaCount: 1
+
     longhornDriver:
       replicas: 1
     longhornManager:

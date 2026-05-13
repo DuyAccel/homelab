@@ -5,8 +5,11 @@ metadata:
   namespace: longhorn-system
 spec:
   parentRefs:
-    - name: http-gateway-istio
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: http-gateway
       namespace: ingress-internal
+      sectionName: https
   hostnames:
     - longhorn.duynch.lab
   rules:

@@ -6,6 +6,8 @@ resources:
   - ../../modules/infrastructure/cilium
   - netpol.yaml
   - values.yaml
+  - l2announcement.yaml
+  - ippool.yaml
 
 patches:
   - target:

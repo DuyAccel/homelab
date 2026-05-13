@@ -7,3 +7,4 @@ resources:
   - istio
   - gateway-api
   - longhorn
+  - cert-manager

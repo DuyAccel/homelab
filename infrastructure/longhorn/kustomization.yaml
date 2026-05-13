@@ -5,6 +5,7 @@ namespace: longhorn-system
 resources:
   - ../../modules/infrastructure/longhorn
   - values.yaml
+  - httproute.yaml
 
 patches:
   - target:

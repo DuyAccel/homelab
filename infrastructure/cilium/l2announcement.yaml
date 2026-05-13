@@ -4,8 +4,10 @@ kind: CiliumL2AnnouncementPolicy
 metadata:
   name: default-l2announcement
 spec:
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/worker: ""
   interfaces:
-    - enp1s0
     - enp0s31f6
   externalIPs: true
   loadBalancerIPs: true

@@ -20,7 +20,7 @@ data:
       accessLogFile: /dev/stdout
       defaultConfig:
         gatewayTopology:
-          proxyProtocol: {}
+          numTrustedProxies: 2
     profile: ambient
     tolerations:
       - effect: NoSchedule

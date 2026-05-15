@@ -6,8 +6,8 @@ data:
   longhorn-values.yaml: |-
     defaultSettings:
       guaranteedInstanceManagerCPU: '{"v1":"10","v2":"10"}'
-      storageOverProvisioningPercentage: "200"
-      storageMinimalAvailablePercentage: "15"
+      storageOverProvisioningPercentage: "100"
+      storageMinimalAvailablePercentage: "20"
       autoSalvage: true
       replicaSoftAntiAffinity: true
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod

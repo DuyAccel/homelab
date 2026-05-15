@@ -4,7 +4,7 @@ kind: Namespace
 metadata:
   name: istio-system
   labels:
-    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/warn: privileged
 spec: {}
 ---
 apiVersion: v1

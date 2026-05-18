@@ -11,7 +11,6 @@ spec:
   selector:
     matchLabels:
       app: garage
-
   template:
     metadata:
       labels:
@@ -19,10 +18,8 @@ spec:
 
     spec:
       terminationGracePeriodSeconds: 120
-
       securityContext:
         fsGroup: 1000
-
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -30,7 +27,6 @@ spec:
                 matchLabels:
                   app: garage
               topologyKey: kubernetes.io/hostname
-
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -38,12 +34,9 @@ spec:
           labelSelector:
             matchLabels:
               app: garage
-
       initContainers:
         - name: render-config
-
           image: docker.io/duyaccel/envsubst:latest
-
           command:
             - sh
             - -ec
@@ -51,20 +44,16 @@ spec:
               envsubst \
                 < /template/garage.toml.tpl \
                 > /config/garage.toml
-
           env:
             - name: HOSTNAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-
           volumeMounts:
             - name: config-template
               mountPath: /template
-
             - name: generated-config
               mountPath: /config
-
       containers:
         - name: garage
           image: dxflrs/garage:v2.3.0
@@ -83,7 +72,6 @@ spec:
             requests:
               cpu: 250m
               memory: 512Mi
-
             limits:
               cpu: "1"
               memory: 2Gi
@@ -93,13 +81,11 @@ spec:
               port: 3900
             failureThreshold: 30
             periodSeconds: 10
-
           readinessProbe:
             tcpSocket:
               port: 3900
             initialDelaySeconds: 10
             periodSeconds: 10
-
           livenessProbe:
             tcpSocket:
               port: 3900
@@ -109,23 +95,18 @@ spec:
           volumeMounts:
             - name: garage-data
               mountPath: /data
-
             - name: generated-config
               mountPath: /etc/garage.toml
               subPath: garage.toml
-
             - name: secret
               mountPath: /secret
               readOnly: true
-
       volumes:
         - name: generated-config
           emptyDir: {}
-
         - name: config-template
           configMap:
             name: garage-config-template
-
         - name: secret
           secret:
             secretName: garage-secret
@@ -133,20 +114,16 @@ spec:
             items:
               - key: rpc-secret
                 path: rpc_secret
-
               - key: admin-token
                 path: admin_token
 
   volumeClaimTemplates:
     - metadata:
         name: garage-data
-
       spec:
         accessModes:
           - ReadWriteOnce
-
         storageClassName: openebs-garage
-
         resources:
           requests:
             storage: 150Gi

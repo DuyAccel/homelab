@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openebs-values
+data:
+  openebs-values.yaml: |-
+    localpv-provisioner:
+      localpv:
+        basePath: /var/local/openebs
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+      hostpathClass:
+        enabled: true
+        name: openebs-hostpath
+        reclaimPolicy: Delete
+
+    # Disable engines and observability components we do not need
+    engines:
+      local:
+        lvm:
+          enabled: false
+        zfs:
+          enabled: false
+        rawfile:
+          enabled: false
+      replicated:
+        mayastor:
+          enabled: false
+
+    loki:
+      enabled: false
+    alloy:
+      enabled: false

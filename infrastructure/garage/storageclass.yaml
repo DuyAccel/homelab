@@ -1,13 +1,16 @@
+---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: openebs-garage
   annotations:
     openebs.io/cas-type: local
+    cas.openebs.io/config: |
+      - name: StorageType
+        value: hostpath
+      - name: BasePath
+        value: /var/local/openebs/garage
 provisioner: openebs.io/local
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: false
-parameters:
-  StorageType: hostpath
-  BasePath: /var/local/openebs/garage

@@ -19,9 +19,6 @@ data:
     s3_region = "garage"
     api_bind_addr = "[::]:3900"
 
-    [s3_web]
-    bind_addr = "[::]:3902"
-
     [admin]
     api_bind_addr = "[::]:3903"
     admin_token_file = "/secret/admin_token"

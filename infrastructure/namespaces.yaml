@@ -33,3 +33,11 @@ metadata:
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: garage
+  labels:
+    networking-zone: internal
+spec: {}

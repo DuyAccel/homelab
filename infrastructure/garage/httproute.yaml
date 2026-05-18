@@ -1,0 +1,20 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: garage-web
+spec:
+  parentRefs:
+    - name: http-gateway
+      namespace: ingress-internal
+      sectionName: https
+  hostnames:
+    - garage.duynch.lab
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: garage
+          port: 3902

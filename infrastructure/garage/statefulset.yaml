@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: garage
+  namespace: garage
+
+spec:
+  serviceName: garage-internal
+  replicas: 3
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: garage
+
+  template:
+    metadata:
+      labels:
+        app: garage
+
+    spec:
+      terminationGracePeriodSeconds: 120
+
+      securityContext:
+        fsGroup: 1000
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: garage
+              topologyKey: kubernetes.io/hostname
+
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: garage
+
+      initContainers:
+        - name: render-config
+
+          image: docker.io/duyaccel/envsubst:latest
+
+          command:
+            - sh
+            - -ec
+            - |
+              envsubst \
+                < /template/garage.toml.tpl \
+                > /config/garage.toml
+
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+
+          volumeMounts:
+            - name: config-template
+              mountPath: /template
+
+            - name: generated-config
+              mountPath: /config
+
+      containers:
+        - name: garage
+          image: dxflrs/garage:v2.3.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3900
+              name: s3
+            - containerPort: 3901
+              name: rpc
+            - containerPort: 3902
+              name: web
+            - containerPort: 3903
+              name: admin
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+
+            limits:
+              cpu: "1"
+              memory: 2Gi
+
+          startupProbe:
+            tcpSocket:
+              port: 3900
+            failureThreshold: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            tcpSocket:
+              port: 3900
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: 3900
+            initialDelaySeconds: 30
+            periodSeconds: 30
+
+          volumeMounts:
+            - name: garage-data
+              mountPath: /data
+
+            - name: generated-config
+              mountPath: /etc/garage.toml
+              subPath: garage.toml
+
+            - name: secret
+              mountPath: /secret
+              readOnly: true
+
+      volumes:
+        - name: generated-config
+          emptyDir: {}
+
+        - name: config-template
+          configMap:
+            name: garage-config-template
+
+        - name: secret
+          secret:
+            secretName: garage-secret
+            defaultMode: 0600
+            items:
+              - key: rpc-secret
+                path: rpc_secret
+
+              - key: admin-token
+                path: admin_token
+
+  volumeClaimTemplates:
+    - metadata:
+        name: garage-data
+
+      spec:
+        accessModes:
+          - ReadWriteOnce
+
+        storageClassName: openebs-garage
+
+        resources:
+          requests:
+            storage: 150Gi

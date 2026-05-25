@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: database
+
+resources:
+  - ../../modules/platform/cloudnative-pg
+
+patches:
+  - target:
+      kind: HelmRelease
+      name: cnpg-operator
+    patch: |
+      - op: add
+        path: /spec/releaseName
+        value: cnpg-operator
+      - op: add
+        path: /spec/targetNamespace
+        value: database

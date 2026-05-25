@@ -39,3 +39,9 @@ kind: Namespace
 metadata:
   name: garage
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+spec: {}

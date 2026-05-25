@@ -5,3 +5,4 @@ resources:
   - namespaces.yaml
   - secret.yaml
   - gateway-api.yaml
+  - httproute.yaml

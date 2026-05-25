@@ -11,3 +11,4 @@ resources:
   - openebs
   - garage
   - cloudnative-pg
+  - dbgate

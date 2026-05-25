@@ -10,3 +10,4 @@ resources:
   - cert-manager
   - openebs
   - garage
+  - cloudnative-pg

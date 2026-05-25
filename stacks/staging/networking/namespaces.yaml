@@ -5,4 +5,5 @@ metadata:
   name: ingress-internal
   labels:
     pod-security.kubernetes.io/warn: privileged
+    networking-zone: internal
 spec: {}

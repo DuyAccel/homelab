@@ -5,8 +5,8 @@ namespace: database
 nameSuffix: -staging
 resources:
   - ../../base/postgresql
-  - keycloak-db.yaml
   - secret.yaml
+  - keycloak-db.yaml
 
 patches:
   - target:

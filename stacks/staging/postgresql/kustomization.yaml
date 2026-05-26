@@ -43,7 +43,7 @@ patches:
           inherit: true
           connectionLimit: 100
           passwordSecret:
-            name: keycloak-app-secret
+            name: keycloak-app-secret-staging
 
       - op: add
         path: /spec/managed/roles/-
@@ -58,4 +58,4 @@ patches:
           inherit: true
           connectionLimit: 20
           passwordSecret:
-            name: keycloak-readonly-secret
+            name: keycloak-readonly-secret-staging

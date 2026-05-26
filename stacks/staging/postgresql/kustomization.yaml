@@ -1,0 +1,61 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: database
+
+nameSuffix: -staging
+resources:
+  - ../../base/postgresql
+  - keycloak-db.yaml
+  - secret.yaml
+
+patches:
+  - target:
+      kind: Cluster
+      group: postgresql.cnpg.io
+      name: postgresql
+    patch: |
+      - op: replace
+        path: /spec/instances
+        value: 1
+
+      - op: replace
+        path: /spec/storage/size
+        value: 15Gi
+      - op: replace
+        path: /spec/walStorage/size
+        value: 5Gi
+
+      - op: add
+        path: /spec/managed
+        value:
+          roles: []
+
+      - op: add
+        path: /spec/managed/roles/-
+        value:
+          name: keycloak_app
+          ensure: present
+          login: true
+          superuser: false
+          createdb: false
+          createrole: false
+          replication: false
+          inherit: true
+          connectionLimit: 100
+          passwordSecret:
+            name: keycloak-app-secret
+
+      - op: add
+        path: /spec/managed/roles/-
+        value:
+          name: keycloak_readonly
+          ensure: present
+          login: true
+          superuser: false
+          createdb: false
+          createrole: false
+          replication: false
+          inherit: true
+          connectionLimit: 20
+          passwordSecret:
+            name: keycloak-readonly-secret

@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../../modules/infrastructure/authen
+  - namespace.yaml
   - values.yaml
 
 patches:
@@ -16,4 +17,3 @@ patches:
           kind: ConfigMap
           name: authen-values-base
           valuesKey: values.yaml
-

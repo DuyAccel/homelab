@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: iam
+  labels:
+    networking-zone: internal
+spec: {}

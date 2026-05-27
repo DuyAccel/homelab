@@ -7,3 +7,4 @@ resources:
   - stacks/staging.yaml
   - stacks/production.yaml
   - infrastructure.yaml
+  - rbac.yaml

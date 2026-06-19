@@ -55,6 +55,28 @@ data:
       defaultConfig:
         gatewayTopology:
           numTrustedProxies: 2
+      extensionProviders:
+        - name: oauth2-proxy-int
+          envoyExtAuthzHttp:
+            service: oauth2-proxy.iam-staging.svc.cluster.local
+            port: 4180
+            includeRequestHeadersInCheck:
+              - authorization
+              - cookie
+              - x-forwarded-host
+              - x-forwarded-proto
+              - x-forwarded-uri
+            headersToUpstreamOnAllow:
+              - authorization
+              - cookie
+              - path
+              - x-auth-request-user
+              - x-auth-request-email
+              - x-auth-request-groups
+            headersToDownstreamOnDeny:
+              - content-type
+              - location
+              - set-cookie
     profile: ambient
     tolerations:
       - effect: NoSchedule

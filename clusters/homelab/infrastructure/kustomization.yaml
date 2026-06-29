@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../infrastructure/cilium
+  - ../../../infrastructure/namespaces.yaml
+  - ../../../infrastructure/istio
+  - ../../../infrastructure/gateway-api
+  - ../../../infrastructure/longhorn
+  - ../../../infrastructure/cert-manager
+  - ../../../infrastructure/openebs
+  - ../../../infrastructure/garage
+  - ../../../infrastructure/cloudnative-pg
+  - ../../../infrastructure/dbgate

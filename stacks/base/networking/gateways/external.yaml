@@ -3,6 +3,8 @@ kind: Gateway
 metadata:
   name: external-gateway
   namespace: ingress-external
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   gatewayClassName: istio
   listeners:
@@ -15,7 +17,8 @@ spec:
           selector:
             matchLabels:
               networking-zone: external
-    - name: https
+    - name: https-wildcard
+      hostname: "*.duynch.com"
       port: 443
       protocol: HTTPS
       tls:
@@ -23,7 +26,23 @@ spec:
         certificateRefs:
           - group: ""
             kind: Secret
-            name: tls-secret
+            name: duynch.com-tls
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              networking-zone: external
+    - name: https-root
+      hostname: "duynch.com"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: duynch.com-tls
       allowedRoutes:
         namespaces:
           from: Selector

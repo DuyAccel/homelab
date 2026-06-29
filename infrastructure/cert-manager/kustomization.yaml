@@ -6,6 +6,7 @@ resources:
   - ../../modules/platform/cert-manager
   - secret.yaml
   - values.yaml
+  - cluster-issuer.yaml
 
 patches:
   - target:

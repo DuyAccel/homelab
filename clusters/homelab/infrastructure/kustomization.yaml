@@ -11,3 +11,19 @@ resources:
   - ../../../infrastructure/garage
   - ../../../infrastructure/cloudnative-pg
   - ../../../infrastructure/dbgate
+patches:
+  - target:
+      kind: HelmRelease
+      name: istio-istiod
+    patch: |-
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: istio-istiod
+      spec:
+        values:
+          global:
+            meshID: duynch-mesh
+            multiCluster:
+              clusterName: homelab
+            network: network-homelab

@@ -1,26 +1,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: env-staging
+  name: env-edge
   namespace: flux-system
 spec:
   interval: 5m
-
-  path: ./stacks/staging
+  path: ./stacks/edge
   prune: true
-
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-
   wait: true
   timeout: 5m
   serviceAccountName: flux-deployer
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   patches:
     - target:
         kind: Gateway
@@ -31,4 +24,14 @@ spec:
         metadata:
           name: eastwest-gateway
           labels:
-            topology.istio.io/network: network-homelab
+            topology.istio.io/network: network-edge
+    - target:
+        kind: Gateway
+        name: external-gateway
+      patch: |-
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        metadata:
+          name: external-gateway
+          annotations:
+            proxy.istio.io/config: '{"gatewayTopology" : { "proxyProtocol": {} }}'

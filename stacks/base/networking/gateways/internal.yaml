@@ -34,3 +34,39 @@ spec:
           selector:
             matchLabels:
               networking-zone: internal
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    io.cilium/lb-ipam-ips: 192.168.10.241
+  name: iam-gateway
+  namespace: ingress-internal
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: http2
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              networking-zone: internal
+
+    - name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: duynch-lab-tls
+        mode: Terminate
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              networking-zone: internal

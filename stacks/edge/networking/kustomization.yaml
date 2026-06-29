@@ -3,7 +3,5 @@ kind: Kustomization
 
 resources:
   - namespaces.yaml
-  - secret.yaml
-  - ../../base/networking/gateways/internal.yaml
+  - ../../base/networking/gateways/external.yaml
   - ../../base/networking/gateways/eastwest.yaml
-  - httproute.yaml

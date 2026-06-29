@@ -1,0 +1,23 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: eastwest-gateway
+  namespace: istio-system
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: tls
+      port: 15443
+      protocol: TLS
+      tls:
+        mode: Passthrough
+    - name: tls-istiod
+      port: 15012
+      protocol: TLS
+      tls:
+        mode: Passthrough
+    - name: tls-webhook
+      port: 15017
+      protocol: TLS
+      tls:
+        mode: Passthrough

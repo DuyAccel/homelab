@@ -9,6 +9,10 @@ spec:
       kind: Gateway
       name: http-gateway
       sectionName: http2
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: iam-gateway
+      sectionName: http2
   rules:
     - filters:
         - type: RequestRedirect

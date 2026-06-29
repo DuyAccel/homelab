@@ -11,7 +11,10 @@ spec:
       protocol: HTTP
       allowedRoutes:
         namespaces:
-          from: All
+          from: Selector
+          selector:
+            matchLabels:
+              networking-zone: external
     - name: https
       port: 443
       protocol: HTTPS
@@ -23,4 +26,7 @@ spec:
             name: tls-secret
       allowedRoutes:
         namespaces:
-          from: All
+          from: Selector
+          selector:
+            matchLabels:
+              networking-zone: external

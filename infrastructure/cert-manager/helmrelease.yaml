@@ -4,9 +4,14 @@ kind: HelmRelease
 metadata:
   name: cert-manager
 spec:
+  releaseName: cert-manager
+  targetNamespace: cert-manager
   chartRef:
     kind: OCIRepository
     name: cert-manager
     namespace: flux-system
   interval: 72h
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: cert-manager-values
+      valuesKey: cert-manager-values.yaml

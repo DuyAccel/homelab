@@ -3,26 +3,7 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-  - ../../modules/platform/cert-manager
+  - helmrelease.yaml
   - secret.yaml
   - values.yaml
   - cluster-issuer.yaml
-
-patches:
-  - target:
-      kind: HelmRelease
-      name: cert-manager
-    patch: |
-      - op: add
-        path: /spec/releaseName
-        value: cert-manager
-      - op: add
-        path: /spec/targetNamespace
-        value: cert-manager
-
-      - op: add
-        path: /spec/valuesFrom/-
-        value:
-          kind: ConfigMap
-          name: cert-manager-values
-          valuesKey: cert-manager-values.yaml

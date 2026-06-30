@@ -3,24 +3,6 @@ kind: Kustomization
 namespace: longhorn-system
 
 resources:
-  - ../../modules/infrastructure/longhorn
+  - helmrelease.yaml
   - values.yaml
   - httproute.yaml
-
-patches:
-  - target:
-      kind: HelmRelease
-      name: longhorn
-    patch: |
-      - op: add
-        path: /spec/releaseName
-        value: longhorn
-      - op: add
-        path: /spec/targetNamespace
-        value: longhorn-system
-      - op: add
-        path: /spec/valuesFrom/-
-        value:
-          kind: ConfigMap
-          name: longhorn-values
-          valuesKey: longhorn-values.yaml

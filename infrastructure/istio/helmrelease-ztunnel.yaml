@@ -4,6 +4,8 @@ kind: HelmRelease
 metadata:
   name: istio-ztunnel
 spec:
+  releaseName: istio-ztunnel
+  targetNamespace: istio-system
   chart:
     spec:
       chart: ztunnel
@@ -13,4 +15,7 @@ spec:
         name: istio
         namespace: flux-system
   interval: 72h
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: istio-values
+      valuesKey: ztunnel-values.yaml

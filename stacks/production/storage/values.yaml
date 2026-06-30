@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: storage-values-prod
-data:
-  longhorn-values.yaml: |-
-    namespaceOverride: "storage"

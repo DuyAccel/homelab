@@ -4,6 +4,8 @@ kind: HelmRelease
 metadata:
   name: istio-cni
 spec:
+  releaseName: istio-cni
+  targetNamespace: istio-system
   chart:
     spec:
       chart: cni
@@ -13,4 +15,7 @@ spec:
         name: istio
         namespace: flux-system
   interval: 72h
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: istio-values
+      valuesKey: cni-values.yaml

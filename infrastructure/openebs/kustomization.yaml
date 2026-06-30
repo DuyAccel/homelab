@@ -3,23 +3,5 @@ kind: Kustomization
 namespace: longhorn-system
 
 resources:
-  - ../../modules/infrastructure/openebs
+  - helmrelease.yaml
   - values.yaml
-
-patches:
-  - target:
-      kind: HelmRelease
-      name: openebs
-    patch: |
-      - op: add
-        path: /spec/releaseName
-        value: openebs
-      - op: add
-        path: /spec/targetNamespace
-        value: openebs
-      - op: add
-        path: /spec/valuesFrom/-
-        value:
-          kind: ConfigMap
-          name: openebs-values
-          valuesKey: openebs-values.yaml

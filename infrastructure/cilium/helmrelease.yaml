@@ -4,9 +4,14 @@ kind: HelmRelease
 metadata:
   name: cilium
 spec:
+  releaseName: cilium
+  targetNamespace: kube-system
   chartRef:
     kind: OCIRepository
     name: cilium
     namespace: flux-system
   interval: 72h
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: cilium-values
+      valuesKey: cilium-values.yaml

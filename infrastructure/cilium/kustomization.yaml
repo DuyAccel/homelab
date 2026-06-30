@@ -3,25 +3,7 @@ kind: Kustomization
 namespace: kube-system
 
 resources:
-  - ../../modules/infrastructure/cilium
+  - helmrelease.yaml
   - values.yaml
   - l2announcement.yaml
   - ippool.yaml
-
-patches:
-  - target:
-      kind: HelmRelease
-      name: cilium
-    patch: |
-      - op: add
-        path: /spec/releaseName
-        value: cilium
-      - op: add
-        path: /spec/targetNamespace
-        value: kube-system
-      - op: add
-        path: /spec/valuesFrom/-
-        value:
-          kind: ConfigMap
-          name: cilium-values
-          valuesKey: cilium-values.yaml

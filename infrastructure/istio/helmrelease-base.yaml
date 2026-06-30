@@ -4,6 +4,8 @@ kind: HelmRelease
 metadata:
   name: istio-base
 spec:
+  releaseName: istio-base
+  targetNamespace: istio-system
   chart:
     spec:
       chart: base
@@ -13,4 +15,7 @@ spec:
         name: istio
         namespace: flux-system
   interval: 72h
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: istio-values
+      valuesKey: base-values.yaml

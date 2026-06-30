@@ -5,4 +5,3 @@ resources:
   - namespaces.yaml
   - ../../base/networking/gateways/external.yaml
   - ../../base/networking/gateways/eastwest.yaml
-  - nodeport-services.yaml

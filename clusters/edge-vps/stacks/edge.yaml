@@ -25,10 +25,6 @@ spec:
           name: eastwest-gateway
           labels:
             topology.istio.io/network: network-edge
-        spec:
-          addresses:
-            - type: IPAddress
-              value: 172.21.10.1
     - target:
         kind: Gateway
         name: external-gateway
@@ -39,7 +35,3 @@ spec:
           name: external-gateway
           annotations:
             proxy.istio.io/config: '{"gatewayTopology" : { "proxyProtocol": {} }}'
-        spec:
-          addresses:
-            - type: IPAddress
-              value: 172.21.10.10

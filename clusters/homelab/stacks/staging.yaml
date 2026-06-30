@@ -32,3 +32,25 @@ spec:
           name: eastwest-gateway
           labels:
             topology.istio.io/network: network-homelab
+          annotations:
+            io.cilium/lb-ipam-ips: 192.168.10.254
+    - target:
+        kind: Gateway
+        name: http-gateway
+      patch: |-
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        metadata:
+          name: http-gateway
+          annotations:
+            io.cilium/lb-ipam-ips: 192.168.10.240
+    - target:
+        kind: Gateway
+        name: iam-gateway
+      patch: |-
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        metadata:
+          name: iam-gateway
+          annotations:
+            io.cilium/lb-ipam-ips: 192.168.10.241

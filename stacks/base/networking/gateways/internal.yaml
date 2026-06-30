@@ -2,8 +2,6 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  annotations:
-    io.cilium/lb-ipam-ips: 192.168.10.240
   name: http-gateway
   namespace: ingress-internal
 spec:
@@ -38,8 +36,6 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  annotations:
-    io.cilium/lb-ipam-ips: 192.168.10.241
   name: iam-gateway
   namespace: ingress-internal
 spec:

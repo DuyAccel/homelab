@@ -11,6 +11,7 @@ resources:
   - ../../../infrastructure/garage
   - ../../../infrastructure/cloudnative-pg
   - ../../../infrastructure/dbgate
+  - homelab-cacerts.yaml
 patches:
   - target:
       kind: HelmRelease

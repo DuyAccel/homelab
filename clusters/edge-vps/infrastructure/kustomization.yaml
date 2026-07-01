@@ -4,6 +4,7 @@ resources:
   - ../../../infrastructure/namespaces.yaml
   - ../../../infrastructure/istio
   - ../../../infrastructure/cert-manager
+  - edge-vps-cacerts.yaml
 patches:
   - target:
       kind: HelmRelease

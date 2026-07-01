@@ -17,6 +17,7 @@ data:
     env:
       AMBIENT_ENABLE_MULTI_NETWORK: 'true'
       AMBIENT_ENABLE_BAGGAGE: 'true'
+      PILOT_ENABLE_ALPHA_GATEWAY_API: 'true'
     pilot:
       jwksResolverExtraRootCA: |
         -----BEGIN CERTIFICATE-----

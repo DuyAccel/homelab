@@ -4,20 +4,12 @@ metadata:
   name: eastwest-gateway
   namespace: istio-system
 spec:
-  gatewayClassName: istio
+  gatewayClassName: istio-east-west
   listeners:
-    - name: tls
-      port: 15443
-      protocol: TLS
+    - name: mesh
+      port: 15008
+      protocol: HBONE
       tls:
-        mode: Passthrough
-    - name: tls-istiod
-      port: 15012
-      protocol: TLS
-      tls:
-        mode: Passthrough
-    - name: tls-webhook
-      port: 15017
-      protocol: TLS
-      tls:
-        mode: Passthrough
+        mode: Terminate
+        options:
+          gateway.istio.io/tls-terminate-mode: ISTIO_MUTUAL

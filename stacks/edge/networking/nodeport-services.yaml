@@ -23,9 +23,13 @@ kind: Service
 metadata:
   name: eastwest-gateway-nodeport
   namespace: istio-system
+  labels:
+    topology.istio.io/network: network-edge
 spec:
   type: NodePort
   externalTrafficPolicy: Local
+  externalIPs:
+    - 172.21.10.10
   selector:
     gateway.networking.k8s.io/gateway-name: eastwest-gateway
   ports:

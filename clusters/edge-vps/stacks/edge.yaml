@@ -25,6 +25,8 @@ spec:
           name: eastwest-gateway
           labels:
             topology.istio.io/network: network-edge
+          annotations:
+            networking.istio.io/service-type: ClusterIP
     - target:
         kind: Gateway
         name: external-gateway
@@ -34,4 +36,5 @@ spec:
         metadata:
           name: external-gateway
           annotations:
+            networking.istio.io/service-type: ClusterIP
             proxy.istio.io/config: '{"gatewayTopology" : { "proxyProtocol": {} }}'

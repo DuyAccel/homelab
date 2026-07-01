@@ -41,3 +41,13 @@ patches:
             clusterName: homelab
           global:
             network: network-homelab
+  - target:
+      kind: Namespace
+      name: istio-system
+    patch: |-
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: istio-system
+        labels:
+          topology.istio.io/network: network-homelab

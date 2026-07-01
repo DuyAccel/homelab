@@ -19,13 +19,16 @@ spec:
         kind: Gateway
         name: eastwest-gateway
       patch: |-
-        - op: add
-          path: /metadata/annotations
-          value:
-            networking.istio.io/service-type: "ClusterIP"
-        - op: add
-          path: /spec/addresses
-          value:
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        metadata:
+          name: eastwest-gateway
+          labels:
+            topology.istio.io/network: network-edge
+          annotations:
+            networking.istio.io/service-type: ClusterIP
+        spec:
+          addresses:
             - type: IPAddress
               value: 172.21.10.10
     - target:

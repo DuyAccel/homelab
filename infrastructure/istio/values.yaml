@@ -14,6 +14,9 @@ data:
       enabled: true
   istiod-values.yaml: |-
     enabled: true
+    env:
+      AMBIENT_ENABLE_MULTI_NETWORK: 'true'
+      AMBIENT_ENABLE_BAGGAGE: 'true'
     pilot:
       jwksResolverExtraRootCA: |
         -----BEGIN CERTIFICATE-----

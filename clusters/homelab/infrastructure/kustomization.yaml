@@ -27,3 +27,17 @@ patches:
             multiCluster:
               clusterName: homelab
             network: network-homelab
+  - target:
+      kind: HelmRelease
+      name: istio-ztunnel
+    patch: |-
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: istio-istiod
+      spec:
+        values:
+          multiCluster:
+            clusterName: homelab
+          global:
+            network: network-homelab

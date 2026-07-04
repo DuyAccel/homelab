@@ -27,13 +27,13 @@ spec:
       scrapeInterval: 120s
 
     destinations:
-      - name: victoriametrics
+      victoriametrics:
         type: prometheus
         url: http://victoria-metrics-victoria-metrics-single.observability-stack.svc.cluster.local:8428/api/v1/write
-      - name: loki
+      loki:
         type: loki
         url: http://loki.observability-stack.svc.cluster.local:3100/loki/api/v1/push
-      - name: tempo
+      tempo:
         type: otlp
         url: http://tempo.observability-stack.svc.cluster.local:4317
         protocol: grpc

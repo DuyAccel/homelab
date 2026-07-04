@@ -11,6 +11,8 @@ resources:
   - ../../../infrastructure/garage
   - ../../../infrastructure/cloudnative-pg
   - ../../../infrastructure/dbgate
+  - ../../../infrastructure/monitoring-backends
+  - ../../../infrastructure/monitoring-collector
   - homelab-cacerts.yaml
 patches:
   - target:

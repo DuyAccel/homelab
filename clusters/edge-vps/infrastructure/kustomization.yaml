@@ -4,6 +4,7 @@ resources:
   - ../../../infrastructure/namespaces.yaml
   - ../../../infrastructure/istio
   - ../../../infrastructure/cert-manager
+  - ../../../infrastructure/monitoring-collector
   - edge-vps-cacerts.yaml
 patches:
   - target:
@@ -45,3 +46,15 @@ patches:
         name: istio-system
         labels:
           topology.istio.io/network: network-edge
+  - target:
+      kind: HelmRelease
+      name: k8s-monitoring
+    patch: |-
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: k8s-monitoring
+      spec:
+        values:
+          cluster:
+            name: edge-vps

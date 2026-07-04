@@ -49,3 +49,11 @@ metadata:
   labels:
     networking-zone: internal
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability-stack
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    networking-zone: internal

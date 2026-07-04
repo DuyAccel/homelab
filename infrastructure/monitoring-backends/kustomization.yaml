@@ -5,3 +5,5 @@ resources:
   - victoria-metrics.yaml
   - loki.yaml
   - tempo.yaml
+  - grafana.yaml
+  - httproute.yaml

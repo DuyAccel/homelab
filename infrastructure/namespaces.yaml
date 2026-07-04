@@ -57,3 +57,4 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
     networking-zone: internal
+    istio.io/dataplane-mode: ambient

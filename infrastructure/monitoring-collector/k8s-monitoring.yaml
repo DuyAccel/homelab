@@ -40,29 +40,36 @@ spec:
 
     clusterMetrics:
       enabled: true
+      collector: alloy-metrics
       destinations: [victoriametrics]
+
+    telemetryServices:
+      kube-state-metrics:
+        deploy: true
       # ksm:
       #   enabled: true
     nodeMetrics:
       enabled: true
+      collector: alloy-metrics
       destinations: [victoriametrics]
     
-    podLogs:
+    podLogsViaLoki:
       enabled: true
+      collector: alloy-logs
       destinations: [loki]
 
-    # Nhận traces qua giao thức OTLP từ các app được inject OTel
-    receivers:
-      grpc:
-        enabled: true
-        port: 4317
-      http:
-        enabled: true
-        port: 4318
-
-    traces:
+    applicationObservability:
       enabled: true
+      collector: alloy-metrics
       destinations: [tempo]
+      receivers:
+        otlp:
+          grpc:
+            enabled: true
+            port: 4317
+          http:
+            enabled: true
+            port: 4318
 
     # Tắt OpenCost vì rất nặng
     costMetrics:
@@ -72,6 +79,7 @@ spec:
     collectors:
       alloy-metrics:
         enabled: true
+        presets: [clustered]
         resources:
           requests:
             cpu: 50m
@@ -81,6 +89,7 @@ spec:
             memory: 512Mi
       alloy-logs:
         enabled: true
+        presets: [filesystem-log-reader]
         resources:
           requests:
             cpu: 50m

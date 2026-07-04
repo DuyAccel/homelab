@@ -69,20 +69,22 @@ spec:
       enabled: false
 
     # Tối ưu hóa bộ phận thu thập (Alloy)
-    alloy-metrics:
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
-    
-    alloy-logs:
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
+    collectors:
+      alloy-metrics:
+        enabled: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+      alloy-logs:
+        enabled: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi

@@ -38,20 +38,20 @@ graph TD
     Client[Client / Internet] -->|Gửi Request| L2[Cilium L2 LoadBalancer]
     L2 -->|Phân bổ IP tĩnh| GW[Gateway API / Istio Ingress]
     
-    subgraph Istio Ambient Mesh (Sidecar-less)
+    subgraph ambient ["Istio Ambient Mesh (Sidecar-less)"]
         GW -->|mTLS Encrypted Tunnel| Z[ZTunnel - L4 Secure Transport]
         Z -->|Chuyển tiếp L7 Traffic| WP[Waypoint Proxy - L7 Policies]
         WP -->|Authorized & Validated| App[Application Pod e.g. duynch.com]
     end
     
-    subgraph Data & Storage Layers
+    subgraph data ["Data & Storage Layers"]
         App -->|Đọc/Ghi Block| LH[Longhorn Distributed Storage]
         App -->|Lưu trữ tệp tin S3| GR[Garage S3 Object Storage]
         App -->|Truy vấn dữ liệu| PG[CloudNative-PG High-Availability]
     end
 
-    style Istio Ambient Mesh fill:#1d2a4a,stroke:#3b5998,stroke-width:2px;
-    style Data & Storage Layers fill:#1a3325,stroke:#2e7d32,stroke-width:2px;
+    style ambient fill:#1d2a4a,stroke:#3b5998,stroke-width:2px;
+    style data fill:#1a3325,stroke:#2e7d32,stroke-width:2px;
 ```
 
 ---

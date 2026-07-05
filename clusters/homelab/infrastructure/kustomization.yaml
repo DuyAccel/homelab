@@ -56,7 +56,7 @@ patches:
           topology.istio.io/network: network-homelab
   - target:
       kind: Namespace
-      name: istio-system
+      name: observability-stack
     patch: |-
       apiVersion: v1
       kind: Namespace

@@ -60,7 +60,7 @@ patches:
             name: edge-vps
   - target:
       kind: Namespace
-      name: istio-system
+      name: observability-stack
     patch: |-
       apiVersion: v1
       kind: Namespace

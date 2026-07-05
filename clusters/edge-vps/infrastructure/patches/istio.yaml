@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-istiod
+  namespace: istio-system
+spec:
+  values:
+    global:
+      meshID: duynch-mesh
+      multiCluster:
+        clusterName: edge-vps
+      network: network-edge
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-ztunnel
+  namespace: istio-system
+spec:
+  values:
+    multiCluster:
+      clusterName: edge-vps
+    global:
+      network: network-edge
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+  labels:
+    topology.istio.io/network: network-edge

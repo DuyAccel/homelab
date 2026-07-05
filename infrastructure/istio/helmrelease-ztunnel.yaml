@@ -15,7 +15,12 @@ spec:
         name: istio
         namespace: flux-system
   interval: 72h
-  valuesFrom:
-    - kind: ConfigMap
-      name: istio-values
-      valuesKey: ztunnel-values.yaml
+  values:
+    variant: distroless
+    profile: ambient
+    resourceName: ztunnel
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+

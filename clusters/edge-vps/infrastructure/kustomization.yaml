@@ -5,26 +5,8 @@ resources:
   - ../../../infrastructure/istio
   - ../../../infrastructure/cert-manager
   - ../../../infrastructure/monitoring-collector
+  - ../../../infrastructure/monitoring-stub-services
   - edge-vps-cacerts.yaml
-  - stub-services.yaml
 patches:
-  - target:
-      kind: HelmRelease
-      name: istio-istiod
-    path: patches/patch-istio-istiod.yaml
-  - target:
-      kind: HelmRelease
-      name: istio-ztunnel
-    path: patches/patch-istio-ztunnel.yaml
-  - target:
-      kind: Namespace
-      name: istio-system
-    path: patches/patch-ns-istio-system.yaml
-  - target:
-      kind: Namespace
-      name: observability-stack
-    path: patches/patch-ns-observability-stack.yaml
-  - target:
-      kind: HelmRelease
-      name: k8s-monitoring
-    path: patches/patch-k8s-monitoring.yaml
+  - path: patches/istio.yaml
+  - path: patches/observability.yaml

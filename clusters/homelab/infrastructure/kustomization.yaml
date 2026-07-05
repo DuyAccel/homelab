@@ -15,19 +15,6 @@ resources:
   - ../../../infrastructure/monitoring-collector
   - homelab-cacerts.yaml
 patches:
-  - target:
-      kind: HelmRelease
-      name: istio-istiod
-    path: patches/patch-istio-istiod.yaml
-  - target:
-      kind: HelmRelease
-      name: istio-ztunnel
-    path: patches/patch-istio-ztunnel.yaml
-  - target:
-      kind: Namespace
-      name: istio-system
-    path: patches/patch-ns-istio-system.yaml
-  - target:
-      kind: Namespace
-      name: observability-stack
-    path: patches/patch-ns-observability-stack.yaml
+  - path: patches/istio.yaml
+  - path: patches/observability.yaml
+

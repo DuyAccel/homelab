@@ -15,7 +15,31 @@ spec:
         name: longhorn
         namespace: flux-system
   interval: 72h
-  valuesFrom:
-    - kind: ConfigMap
-      name: longhorn-values
-      valuesKey: longhorn-values.yaml
+  values:
+    defaultSettings:
+      guaranteedInstanceManagerCPU: '{"v1":"10","v2":"10"}'
+      storageOverProvisioningPercentage: "100"
+      storageMinimalAvailablePercentage: "20"
+      autoSalvage: true
+      replicaSoftAntiAffinity: true
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      autoCleanupSystemGeneratedSnapshot: true
+      concurrentReplicaRebuildPerNodeLimit: 1
+      systemManagedComponentsNodeSelector: longhorn-storage:true
+    persistence:
+      defaultClassReplicaCount: 2
+      reclaimPolicy: Retain
+      migratable: false
+      disableRevisionCounter: "true"
+    csi:
+      attacherReplicaCount: 1
+      provisionerReplicaCount: 1
+      resizerReplicaCount: 1
+      snapshotterReplicaCount: 1
+    longhornDriver:
+      replicas: 1
+    longhornManager:
+      replicas: 1
+    longhornUI:
+      replicas: 1
+

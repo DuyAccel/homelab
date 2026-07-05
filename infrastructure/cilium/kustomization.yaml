@@ -4,6 +4,6 @@ namespace: kube-system
 
 resources:
   - helmrelease.yaml
-  - values.yaml
   - l2announcement.yaml
   - ippool.yaml
+

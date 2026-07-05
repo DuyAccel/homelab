@@ -27,7 +27,6 @@ spec:
   - name: http
     port: 8428
     protocol: TCP
-
   selector:
     app: server
     app.kubernetes.io/instance: victoria-metrics

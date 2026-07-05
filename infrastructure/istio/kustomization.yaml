@@ -7,4 +7,4 @@ resources:
   - helmrelease-cni.yaml
   - helmrelease-istiod.yaml
   - helmrelease-ztunnel.yaml
-  - values.yaml
+

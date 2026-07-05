@@ -15,7 +15,34 @@ spec:
         name: openebs
         namespace: flux-system
   interval: 72h
-  valuesFrom:
-    - kind: ConfigMap
-      name: openebs-values
-      valuesKey: openebs-values.yaml
+  values:
+    localpv-provisioner:
+      localpv:
+        basePath: /var/local/openebs
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+      hostpathClass:
+        enabled: true
+        name: openebs-hostpath
+        reclaimPolicy: Delete
+    engines:
+      local:
+        lvm:
+          enabled: false
+        zfs:
+          enabled: false
+        rawfile:
+          enabled: false
+      replicated:
+        mayastor:
+          enabled: false
+    loki:
+      enabled: false
+    alloy:
+      enabled: false
+

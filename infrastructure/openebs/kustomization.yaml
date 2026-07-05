@@ -4,4 +4,4 @@ namespace: longhorn-system
 
 resources:
   - helmrelease.yaml
-  - values.yaml
+

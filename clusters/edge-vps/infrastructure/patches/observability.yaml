@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: k8s-monitoring
+  namespace: observability-stack
+
+spec:
+  values:
+    cluster:
+      name: edge-vps
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability-stack
+  labels:
+    topology.istio.io/network: network-edge

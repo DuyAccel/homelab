@@ -15,7 +15,7 @@ spec:
         name: istio
         namespace: flux-system
   interval: 72h
-  valuesFrom:
-    - kind: ConfigMap
-      name: istio-values
-      valuesKey: base-values.yaml
+  values:
+    global:
+      variant: distroless
+

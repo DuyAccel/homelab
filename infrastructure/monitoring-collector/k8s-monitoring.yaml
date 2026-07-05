@@ -42,6 +42,10 @@ spec:
       enabled: true
       collector: alloy-metrics
       destinations: [victoriametrics]
+      cadvisor:
+        metricsTuning:
+          includeMetrics:
+            - machine_cpu_cores
 
     telemetryServices:
       kube-state-metrics:

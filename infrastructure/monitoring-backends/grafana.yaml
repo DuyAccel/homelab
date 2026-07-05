@@ -29,7 +29,7 @@ spec:
         datasources:
           - name: VictoriaMetrics
             type: prometheus
-            url: http://victoria-metrics-victoria-metrics-single.observability-stack.svc.cluster.local:8428
+            url: http://victoria-metrics-victoria-metrics-single-server.observability-stack.svc.cluster.local:8428
             access: proxy
             isDefault: true
           - name: Loki
@@ -38,7 +38,7 @@ spec:
             access: proxy
           - name: Tempo
             type: tempo
-            url: http://tempo.observability-stack.svc.cluster.local:3100
+            url: http://tempo.observability-stack.svc.cluster.local:3200
             access: proxy
             jsonData:
               httpMethod: GET

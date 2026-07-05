@@ -29,10 +29,10 @@ spec:
     destinations:
       victoriametrics:
         type: prometheus
-        url: http://victoria-metrics-victoria-metrics-single.observability-stack.svc.cluster.local:8428/api/v1/write
+        url: http://victoria-metrics-victoria-metrics-single-server.observability-stack.svc.cluster.local:8428/api/v1/write
       loki:
         type: loki
-        url: http://loki.observability-stack.svc.cluster.local:3100/loki/api/v1/push
+        url: http://loki-gateway.observability-stack.svc.cluster.local:3100/loki/api/v1/push
       tempo:
         type: otlp
         url: http://tempo.observability-stack.svc.cluster.local:4317
@@ -52,7 +52,7 @@ spec:
       enabled: true
       collector: alloy-metrics
       destinations: [victoriametrics]
-    
+
     podLogsViaLoki:
       enabled: true
       collector: alloy-logs

@@ -12,12 +12,14 @@ data:
       variant: distroless
     ambient:
       enabled: true
+      dnsCapture: true
   istiod-values.yaml: |-
     enabled: true
     env:
       AMBIENT_ENABLE_MULTI_NETWORK: 'true'
       AMBIENT_ENABLE_BAGGAGE: 'true'
       PILOT_ENABLE_ALPHA_GATEWAY_API: 'true'
+      PILOT_ENABLE_IP_AUTOALLOCATE: 'true'
     pilot:
       jwksResolverExtraRootCA: |
         -----BEGIN CERTIFICATE-----

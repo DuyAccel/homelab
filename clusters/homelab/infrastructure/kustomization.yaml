@@ -18,49 +18,16 @@ patches:
   - target:
       kind: HelmRelease
       name: istio-istiod
-    patch: |-
-      apiVersion: helm.toolkit.fluxcd.io/v2
-      kind: HelmRelease
-      metadata:
-        name: istio-istiod
-      spec:
-        values:
-          global:
-            meshID: duynch-mesh
-            multiCluster:
-              clusterName: homelab
-            network: network-homelab
+    path: patches/patch-istio-istiod.yaml
   - target:
       kind: HelmRelease
       name: istio-ztunnel
-    patch: |-
-      apiVersion: helm.toolkit.fluxcd.io/v2
-      kind: HelmRelease
-      metadata:
-        name: istio-ztunnel
-      spec:
-        values:
-          multiCluster:
-            clusterName: homelab
-          global:
-            network: network-homelab
+    path: patches/patch-istio-ztunnel.yaml
   - target:
       kind: Namespace
       name: istio-system
-    patch: |-
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: istio-system
-        labels:
-          topology.istio.io/network: network-homelab
+    path: patches/patch-ns-istio-system.yaml
   - target:
       kind: Namespace
       name: observability-stack
-    patch: |-
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: observability-stack
-        labels:
-          topology.istio.io/network: network-homelab
+    path: patches/patch-ns-observability-stack.yaml

@@ -1,0 +1,10 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-ztunnel
+spec:
+  values:
+    multiCluster:
+      clusterName: edge-vps
+    global:
+      network: network-edge

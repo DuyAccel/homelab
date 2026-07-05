@@ -38,7 +38,7 @@ data:
     loadBalancer:
       algorithm: maglev
     bpf:
-      masquerade: true
+      masquerade: false
     securityContext:
       capabilities:
         ciliumAgent:

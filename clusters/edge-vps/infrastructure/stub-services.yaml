@@ -3,36 +3,55 @@ kind: Service
 metadata:
   name: loki-gateway
   namespace: observability-stack
+  labels:
+    istio.io/global: "true"
 spec:
   ports:
-  - name: http
+  - name: http-metrics
     port: 80
     protocol: TCP
+  selector:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/instance: loki
+    app.kubernetes.io/name: loki
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: victoria-metrics-victoria-metrics-single-server
   namespace: observability-stack
+  labels:
+    istio.io/global: "true"
 spec:
+  clusterIP: None
+  ipFamilyPolicy: SingleStack
   ports:
   - name: http
     port: 8428
     protocol: TCP
+  selector:
+    app: server
+    app.kubernetes.io/instance: victoria-metrics
+    app.kubernetes.io/name: victoria-metrics-single
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: tempo
   namespace: observability-stack
+  labels:
+    istio.io/global: "true"
 spec:
   ports:
-  - name: grpc-otlp
+  - name: grpc-tempo-otlp
     port: 4317
     protocol: TCP
-  - name: http-otlp
+  - name: tempo-otlp-http
     port: 4318
     protocol: TCP
-  - name: http-query
+  - name: tempo-prom-metrics
     port: 3200
     protocol: TCP
+  selector:
+    app.kubernetes.io/instance: tempo
+    app.kubernetes.io/name: tempo

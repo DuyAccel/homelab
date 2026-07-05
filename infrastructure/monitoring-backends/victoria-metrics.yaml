@@ -35,6 +35,9 @@ spec:
           - ReadWriteOnce
         size: 15Gi
         storageClass: longhorn
+      service:
+        clusterIP: ""
+
   postRenderers:
     - kustomize:
         patches:

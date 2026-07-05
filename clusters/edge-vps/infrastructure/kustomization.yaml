@@ -29,7 +29,7 @@ patches:
       apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       metadata:
-        name: istio-istiod
+        name: istio-ztunnel
       spec:
         values:
           multiCluster:

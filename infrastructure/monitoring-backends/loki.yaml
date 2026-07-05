@@ -59,3 +59,13 @@ spec:
       enabled: false
     resultsCache:
       enabled: false
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: loki-gateway
+            patch: |-
+              - op: add
+                path: /metadata/labels/istio.io~1global
+                value: "true"

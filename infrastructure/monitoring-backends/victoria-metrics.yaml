@@ -35,3 +35,13 @@ spec:
           - ReadWriteOnce
         size: 15Gi
         storageClass: longhorn
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: victoria-metrics-victoria-metrics-single-server
+            patch: |-
+              - op: add
+                path: /metadata/labels/istio.io~1global
+                value: "true"

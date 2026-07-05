@@ -41,3 +41,13 @@ spec:
       storageClass: longhorn
     serviceAccount:
       create: true
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: tempo
+            patch: |-
+              - op: add
+                path: /metadata/labels/istio.io~1global
+                value: "true"

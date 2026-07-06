@@ -46,6 +46,8 @@ spec:
         metricsTuning:
           includeMetrics:
             - machine_cpu_cores
+            - node_filesystem_size_bytes
+            - node_filesystem_avail_bytes
 
     telemetryServices:
       kube-state-metrics:

@@ -16,43 +16,70 @@ Chào mừng bạn đến với **k8s-homelab** — dự án xây dựng và qu�
 
 Hệ thống được thiết kế dựa trên các công nghệ tiên tiến nhất trong hệ sinh thái CNCF:
 
-| Phân nhóm | Công nghệ lựa chọn | Mục đích sử dụng |
-| :--- | :--- | :--- |
-| **GitOps Engine** | **FluxCD v2** | Tự động đồng bộ trạng thái từ Git vào Cluster, tự động cập nhật image. |
-| **Networking & Security** | **Cilium (eBPF)** | CNI hiệu năng cao, định tuyến mạng không qua iptables, tích hợp L2 Announcements làm LoadBalancer. |
-| **Service Mesh** | **Istio (Ambient Mode)** | Bảo mật mTLS sidecar-less (ztunnel), quản lý phân quyền (AuthorizationPolicy) & L7 routing qua Waypoint Proxy. |
-| **Storage Layer** | **Longhorn / OpenEBS** | Phân cấp lưu trữ: Block storage phân tán có tính năng replication. |
-| **Object Storage** | **Garage S3** | Lưu trữ S3-compatible dung lượng nhẹ, phân tán đa node, tối ưu cho môi trường Homelab. |
-| **Database Server** | **CloudNative-PG** | DBaaS quản lý PostgreSQL Cluster (High Availability, auto-failover, backup/restore). |
-| **Secret Management** | **Mozilla SOPS & AGE** | Mã hóa an toàn thông tin nhạy cảm (secrets) trực tiếp trên Git. |
-| **Observability** | **VictoriaMetrics & Grafana** | Thu thập metric hiệu năng siêu cao, lưu trữ tối ưu hơn Prometheus truyền thống. |
+| Phân nhóm | Logo | Công nghệ lựa chọn | Mục đích sử dụng |
+| :--- | :--- | :--- | :--- |
+| **GitOps Engine** | <img src="https://cdn.simpleicons.org/flux" width="24" height="24" alt="FluxCD"/> | **FluxCD v2** | Tự động đồng bộ trạng thái từ Git vào Cluster, tự động cập nhật image. |
+| **Networking & Security** | <img src="https://cdn.simpleicons.org/cilium" width="24" height="24" alt="Cilium"/> | **Cilium (eBPF)** | CNI hiệu năng cao, định tuyến mạng không qua iptables, tích hợp L2 Announcements làm LoadBalancer. |
+| **Service Mesh** | <img src="https://cdn.simpleicons.org/istio" width="24" height="24" alt="Istio"/> | **Istio (Ambient Mode)** | Bảo mật mTLS sidecar-less (ztunnel), quản lý phân quyền (AuthorizationPolicy) & L7 routing qua Waypoint Proxy. |
+| **Storage Layer** | <img src="https://raw.githubusercontent.com/cncf/artwork/main/projects/longhorn/icon/color/longhorn-icon-color.svg" width="24" height="24" alt="Longhorn"/> <img src="https://raw.githubusercontent.com/cncf/artwork/main/projects/openebs/icon/color/openebs-icon-color.svg" width="24" height="24" alt="OpenEBS"/> | **Longhorn / OpenEBS** | Phân cấp lưu trữ: Block storage phân tán có tính năng replication. |
+| **Object Storage** | <img src="https://garagehq.deuxfleurs.fr/images/garage-logo.svg" width="24" height="24" alt="Garage S3"/> | **Garage S3** | Lưu trữ S3-compatible dung lượng nhẹ, phân tán đa node, tối ưu cho môi trường Homelab. |
+| **Database Server** | <img src="https://cloudnative-pg.io/logo/large_logo.svg" width="24" height="24" alt="CloudNative-PG"/> | **CloudNative-PG** | DBaaS quản lý PostgreSQL Cluster (High Availability, auto-failover, backup/restore). |
+| **Secret Management** | <img src="https://raw.githubusercontent.com/cncf/artwork/main/projects/sops/icon/color/sops-icon-color.svg" width="24" height="24" alt="SOPS"/> | **Mozilla SOPS & AGE** | Mã hóa an toàn thông tin nhạy cảm (secrets) trực tiếp trên Git. |
+| **Observability** | <img src="https://cdn.simpleicons.org/victoriametrics" width="24" height="24" alt="VictoriaMetrics"/> <img src="https://cdn.simpleicons.org/grafana" width="24" height="24" alt="Grafana"/> | **VictoriaMetrics & Grafana** | Thu thập metric hiệu năng siêu cao, lưu trữ tối ưu hơn Prometheus truyền thống. |
 
 ---
 
-## 🏗️ Kiến Trúc Luồng Dữ Liệu (Data & Network Flow)
+## 🌐 Cấu Hình Mạng Multi-Cluster & Định Tuyến (Multi-Cluster Network Architecture)
 
-Dưới đây là mô hình định tuyến mạng và luồng xử lý yêu cầu đi từ Internet qua các tầng bảo mật của hệ thống để tới ứng dụng:
+Hệ thống kết nối và chuyển tiếp lưu lượng giữa cụm biên (Edge-VPS), cụm nội bộ (Homelab Bare-Metal), và mạng nội bộ (Intranet) thông qua kết nối VPN bảo mật mã hóa:
 
 ```mermaid
 graph TD
-    Client[Client / Internet] -->|Gửi Request| L2[Cilium L2 LoadBalancer]
-    L2 -->|Phân bổ IP tĩnh| GW[Gateway API / Istio Ingress]
+    Internet[🌐 Public Internet]
+    Intranet[🏠 Internal Home Network]
     
-    subgraph ambient ["Istio Ambient Mesh (Sidecar-less)"]
-        GW -->|mTLS Encrypted Tunnel| Z[ZTunnel - L4 Secure Transport]
-        Z -->|Chuyển tiếp L7 Traffic| WP[Waypoint Proxy - L7 Policies]
-        WP -->|Authorized & Validated| App[Application Pod e.g. duynch.com]
-    end
-    
-    subgraph data ["Data & Storage Layers"]
-        App -->|Đọc/Ghi Block| LH[Longhorn Distributed Storage]
-        App -->|Lưu trữ tệp tin S3| GR[Garage S3 Object Storage]
-        App -->|Truy vấn dữ liệu| PG[CloudNative-PG High-Availability]
+    subgraph Edge_LB ["Tầng Biên"]
+        HAProxy("⚖️ HAProxy Load Balancer")
     end
 
-    style ambient fill:#1d2a4a,stroke:#3b5998,stroke-width:2px;
-    style data fill:#1a3325,stroke:#2e7d32,stroke-width:2px;
+    subgraph cluster_edge ["☁️ Edge-VPS Cluster"]
+        Edge_GW[Gateway API / Istio Ingress]
+        Edge_Apps[Edge Workloads]
+        Edge_EW1[East-West Gateway]
+        Edge_GW --> Edge_Apps
+    end
+
+    subgraph cluster_homelab ["🏠 Homelab Cluster (Bare-Metal)"]
+        Lab_GW[Gateway API / Istio Ingress]
+        Lab_Apps[Internal Workloads]
+        Lab_EW2[East-West Gateway]
+        Lab_GW --> Lab_Apps
+    end
+
+    %% Cổng kết nối bảo mật VPN làm trung tâm định tuyến nội bộ
+    subgraph VPN ["🔒 Secure Network Link"]
+        WG_Tunnel{{"WireGuard VPN Tunnel"}}
+    end
+
+    %% Định tuyến luồng Internet
+    Internet --> HAProxy
+    HAProxy -->|Định tuyến duy nhất| Edge_GW
+    Edge_EW1 <==>|Truy cập dịch vụ Homelab nếu cần| WG_Tunnel <==> Lab_EW2
+
+    %% Định tuyến luồng mạng nội bộ qua VPN thẳng vào Internal Ingress Gateway của Homelab
+    Intranet -->|Thông qua VPN| WG_Tunnel
+    WG_Tunnel -->|Truy cập dịch vụ nội bộ| Lab_GW
+
+    %% Styling
+    style HAProxy fill:#ffcc00,stroke:#333,stroke-width:2px;
+    style WG_Tunnel fill:#e64a19,stroke:#fff,stroke-width:2px,color:#fff;
+    style cluster_edge fill:#1d2a4a,stroke:#0066cc,stroke-width:2px;
+    style cluster_homelab fill:#1a3325,stroke:#00cc66,stroke-width:2px;
 ```
+
+* **Định tuyến Biên (Edge Routing):** HAProxy ở mặt trước chỉ định tuyến traffic từ Internet trực tiếp vào cụm biên Edge-VPS. Mọi truy cập từ Internet muốn tới các dịch vụ ở cụm Homelab (nếu cần thiết) bắt buộc phải đi qua Ingress của Edge-VPS, sau đó chuyển tiếp nội bộ qua kênh VPN giữa hai East-West Gateway của Istio.
+* **Mạng nội bộ (Intranet Access):** Người dùng từ mạng nội bộ (Internal) truy cập trực tiếp các dịch vụ trên Homelab Cluster thông qua **WireGuard VPN Tunnel** để đi thẳng vào **Internal Gateway (Lab_GW)** trên Homelab mà không cần đi vòng ra ngoài Internet, đảm bảo an toàn tuyệt đối.
+* **Kết nối Liên Cluster (Multi-Cluster Mesh):** Kênh truyền **WireGuard VPN Tunnel** kết nối thông suốt giữa các East-West Gateway của Istio, cho phép các dịch vụ ở 2 cụm giao tiếp an toàn qua mTLS như thể đang chạy trong cùng một mạng LAN.
 
 ---
 

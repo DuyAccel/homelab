@@ -52,6 +52,9 @@ patches:
         name: deploy
       spec:
         template:
+          volumes:
+            - name: tmp-volume
+              emptyDir: {}
           spec:
             containers:
               - name: app
@@ -82,3 +85,7 @@ patches:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: frontend
+
+              volumeMounts:
+                - name: tmp-volume
+                  mountPath: /tmp

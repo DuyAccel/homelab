@@ -1,0 +1,84 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: duynch
+
+resources:
+  - ../../base
+  - ../../base/route
+  - netpol.yaml
+
+namePrefix: frontend-
+
+# Common labels applied to all resources (standardized to app.kubernetes.io/name)
+labels:
+  - pairs:
+      app.kubernetes.io/name: frontend
+    includeSelectors: true
+
+images:
+  - name: placeholder-image
+    newName: ghcr.io/duyaccel/duynch
+    newTag: sha-a5cfacb
+
+patches:
+  # Patch the HTTPRoute to set the production hostnames
+  - target:
+      kind: HTTPRoute
+      name: route
+    patch: |-
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: route
+      spec:
+        parentRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: http-gateway
+            namespace: ingress-external
+            sectionName: https
+        hostnames:
+          - "duynch.com"
+
+  # Patch the deployment probes and scheduling specs to use the standard app.kubernetes.io/name label
+  - target:
+      kind: Deployment
+      name: deploy
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: deploy
+      spec:
+        template:
+          spec:
+            containers:
+              - name: app
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                          - key: app.kubernetes.io/name
+                            operator: In
+                            values:
+                              - frontend
+                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: ScheduleAnyway
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: frontend

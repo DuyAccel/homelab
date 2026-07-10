@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: secure-ingress
+spec:
+  action: ALLOW
+  rules:
+    # 1. Allow all mTLS-authenticated mesh traffic (essential for Multi-Cluster cross-service communication)
+    - from:
+        - source:
+            principals: ["*"]
+    # 2. Allow external public traffic routed through the Ingress Gateway
+    - from:
+        - source:
+            namespaces: ["ingress-external"]

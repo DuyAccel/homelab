@@ -5,3 +5,4 @@ resources:
   - ../../sources
   - infrastructure.yaml
   - stacks
+  - application.yaml

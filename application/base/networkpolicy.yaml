@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: web
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic from within the same namespace
+    - from:
+        - podSelector: {}
+    # Allow traffic from the ingress gateway running in ingress-external namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-external
+  egress:
+    # Allow all egress (e.g. to reach database, external APIs, DNS)
+    - {}

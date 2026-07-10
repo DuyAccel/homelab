@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: web
+    spec:
+      # Pod-level security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+
+      # Pod anti-affinity to spread replicas across nodes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - web
+                topologyKey: kubernetes.io/hostname
+
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: web
+
+      containers:
+        - name: app
+          image: placeholder-image:latest
+          imagePullPolicy: IfNotPresent
+
+          # Container-level security context
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+
+          # Standard ports
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          # Liveness and Readiness Probes (defaults, should be customized for specific apps if paths differ)
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          # Resource requests and limits to prevent resource contention
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

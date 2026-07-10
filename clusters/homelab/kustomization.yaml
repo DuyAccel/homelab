@@ -8,3 +8,4 @@ resources:
   - stacks/production.yaml
   - infrastructure.yaml
   - rbac.yaml
+  - application.yaml

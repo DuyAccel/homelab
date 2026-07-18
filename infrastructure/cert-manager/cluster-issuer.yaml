@@ -9,8 +9,22 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:
-      - dns01:
+      - selector:
+          dnsZones:
+            - "duynch.com"
+            - "*.duynch.com"
+        dns01:
           cloudflare:
             apiTokenSecretRef:
               name: cloudflare-apitoken-secret
               key: api-token
+      - selector:
+          dnsZones:
+            - "khoanguyen.io.vn"
+        http01:
+          gatewayHTTPRoute:
+            parentRefs:
+              - group: gateway.networking.k8s.io
+                kind: Gateway
+                name: external-gateway
+                namespace: ingress-external

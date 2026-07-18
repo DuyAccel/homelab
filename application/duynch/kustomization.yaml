@@ -6,5 +6,5 @@ namespace: duynch
 resources:
   - namespace.yaml
   - ../base/default-deny
-  - ../base/route/
   - frontend
+

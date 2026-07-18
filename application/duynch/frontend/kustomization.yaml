@@ -35,9 +35,8 @@ patches:
         parentRefs:
           - group: gateway.networking.k8s.io
             kind: Gateway
-            name: http-gateway
+            name: external-gateway
             namespace: ingress-external
-            sectionName: https
         hostnames:
           - "duynch.com"
 

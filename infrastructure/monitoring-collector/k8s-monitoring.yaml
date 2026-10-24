@@ -54,10 +54,17 @@ spec:
         deploy: true
       # ksm:
       #   enabled: true
-    nodeMetrics:
+    hostMetrics:
       enabled: true
       collector: alloy-metrics
       destinations: [victoriametrics]
+      linuxHosts:
+        enabled: true
+        metricsTuning:
+          useDefaultAllowList: true
+          includeMetrics:
+            - node_disk_read_bytes_total
+            - node_disk_written_bytes_total
 
     podLogsViaLoki:
       enabled: true

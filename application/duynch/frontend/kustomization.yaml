@@ -19,7 +19,7 @@ labels:
 images:
   - name: placeholder-image
     newName: ghcr.io/duyaccel/duynch
-    newTag: sha-a5cfacb
+    newTag: sha-18bf280
 
 patches:
   # Patch the HTTPRoute to set the production hostnames

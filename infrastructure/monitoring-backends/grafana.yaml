@@ -64,3 +64,11 @@ spec:
                   ]
               serviceMap:
                 datasourceUid: "VictoriaMetrics"
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        labelValue: "1"
+        searchNamespace: observability-stack
+        provider:
+          allowUiUpdates: true

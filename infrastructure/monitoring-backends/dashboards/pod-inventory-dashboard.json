@@ -1,0 +1,253 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ready" },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": { "text": "Not Ready", "color": "red" },
+                      "1": { "text": "Ready", "color": "green" }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Restarts" },
+            "properties": [ { "id": "decimals", "value": 0 } ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "CPU usage (cores)" },
+            "properties": [ { "id": "unit", "value": "cores" } ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Memory usage" },
+            "properties": [ { "id": "unit", "value": "bytes" } ]
+          }
+        ]
+      },
+      "gridPos": { "h": 16, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [ { "desc": true, "displayName": "Restarts" } ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+          "editorMode": "code",
+          "expr": "max by (cluster, namespace, pod, owner_kind) (kube_pod_owner{owner_is_controller=\"true\", cluster=~\"$cluster\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+          "editorMode": "code",
+          "expr": "max by (cluster, namespace, pod) (kube_pod_status_ready{condition=\"true\", cluster=~\"$cluster\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+          "editorMode": "code",
+          "expr": "sum by (cluster, namespace, pod) (kube_pod_container_status_restarts_total{cluster=~\"$cluster\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+          "editorMode": "code",
+          "expr": "sum by (cluster, namespace, pod) (rate(container_cpu_usage_seconds_total{container!=\"\", container!=\"POD\", cluster=~\"$cluster\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "D"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+          "editorMode": "code",
+          "expr": "sum by (cluster, namespace, pod) (container_memory_working_set_bytes{container!=\"\", container!=\"POD\", cluster=~\"$cluster\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "E"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+          "editorMode": "code",
+          "expr": "max by (cluster, namespace, pod, node) (kube_pod_info{cluster=~\"$cluster\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "F"
+        }
+      ],
+      "title": "Kubernetes Pod Inventory",
+      "transformations": [
+        { "id": "merge", "options": {} },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value #A": true,
+              "Value #F": true
+            },
+            "indexByName": {
+              "cluster": 0,
+              "namespace": 1,
+              "owner_kind": 2,
+              "pod": 3,
+              "Value #B": 4,
+              "Value #C": 5,
+              "Value #D": 6,
+              "Value #E": 7,
+              "node": 8
+            },
+            "renameByName": {
+              "cluster": "Cluster",
+              "namespace": "Namespace",
+              "owner_kind": "Owner kind",
+              "pod": "Pod name",
+              "Value #B": "Ready",
+              "Value #C": "Restarts",
+              "Value #D": "CPU usage (cores)",
+              "Value #E": "Memory usage",
+              "node": "Node"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 42,
+  "tags": [ "kubernetes", "pods", "multi-cluster" ],
+  "templating": {
+    "list": [
+      {
+        "name": "metrics_ds",
+        "label": "Metrics datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "hide": 0,
+        "refresh": 1,
+        "options": []
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": "All", "value": [ "$__all" ] },
+        "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+        "definition": "label_values(kube_pod_info, cluster)",
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": true,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info, cluster)",
+          "refId": "VictoriaMetricsVariableQueryEditor-Cluster"
+        },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": "All", "value": [ "$__all" ] },
+        "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+        "definition": "label_values(kube_pod_info{cluster=~\"$cluster\"}, namespace)",
+        "includeAll": true,
+        "label": "Namespace",
+        "multi": true,
+        "name": "namespace",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info{cluster=~\"$cluster\"}, namespace)",
+          "refId": "VictoriaMetricsVariableQueryEditor-Namespace"
+        },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": "All", "value": [ "$__all" ] },
+        "datasource": { "type": "prometheus", "uid": "${metrics_ds}" },
+        "definition": "label_values(kube_pod_info{cluster=~\"$cluster\", namespace=~\"$namespace\"}, pod)",
+        "includeAll": true,
+        "label": "Pod",
+        "multi": true,
+        "name": "pod",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info{cluster=~\"$cluster\", namespace=~\"$namespace\"}, pod)",
+          "refId": "VictoriaMetricsVariableQueryEditor-Pod"
+        },
+        "refresh": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-30m", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Kubernetes Pod Inventory",
+  "uid": "homelab-pod-inventory-gitops",
+  "version": 1
+}

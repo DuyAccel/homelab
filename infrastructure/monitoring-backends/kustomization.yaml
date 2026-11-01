@@ -7,3 +7,4 @@ resources:
   - tempo.yaml
   - grafana.yaml
   - httproute.yaml
+  - dashboards

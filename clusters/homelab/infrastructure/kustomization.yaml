@@ -11,10 +11,12 @@ resources:
   - ../../../infrastructure/garage
   - ../../../infrastructure/cloudnative-pg
   - ../../../infrastructure/dbgate
+  - ../../../infrastructure/kepler
   - ../../../infrastructure/monitoring-backends
   - ../../../infrastructure/monitoring-collector
   - homelab-cacerts.yaml
 patches:
   - path: patches/istio.yaml
   - path: patches/observability.yaml
+  - path: patches/kepler-monitoring.yaml
 

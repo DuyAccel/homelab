@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: k8s-monitoring
+  namespace: observability-stack
+spec:
+  values:
+    telemetryServices:
+      kepler:
+        deploy: false
+    hostMetrics:
+      energyMetrics:
+        enabled: true
+        namespace: observability-stack
+        scrapeInterval: 120s
+        labelMatchers:
+          app.kubernetes.io/name: kepler

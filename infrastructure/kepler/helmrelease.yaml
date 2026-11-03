@@ -1,0 +1,56 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kepler
+  namespace: observability-stack
+spec:
+  interval: 10m
+  releaseName: kepler
+  targetNamespace: observability-stack
+  chartRef:
+    kind: OCIRepository
+    name: kepler
+    namespace: flux-system
+  values:
+    namespace:
+      create: false
+      name: observability-stack
+    image:
+      repository: quay.io/sustainable_computing_io/kepler
+      tag: v0.12.0
+      pullPolicy: IfNotPresent
+    serviceAccount:
+      create: true
+      name: kepler
+    rbac:
+      create: true
+    daemonset:
+      hostPID: true
+      hostUsers: true
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/hostname: worker01
+      securityContext:
+        privileged: true
+        runAsNonRoot: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+    config:
+      log:
+        level: info
+        format: text
+      cpu:
+        preferredMeters:
+          - rapl
+          - hwmon
+      exporter:
+        prometheus:
+          enabled: true
+          metricsLevel:
+            - node
+            - pod

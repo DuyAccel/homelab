@@ -54,6 +54,8 @@ spec:
         deploy: true
       node-exporter:
         deploy: true
+      kepler:
+        deploy: false
       # ksm:
       #   enabled: true
     hostMetrics:

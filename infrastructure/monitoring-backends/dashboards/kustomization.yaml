@@ -5,6 +5,7 @@ configMapGenerator:
   - name: grafana-dashboard-pod-inventory
     files:
       - pod-inventory-dashboard.json
+      - servers-overview.json
     options:
       labels:
         grafana_dashboard: "1"

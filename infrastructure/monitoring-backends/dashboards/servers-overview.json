@@ -651,7 +651,7 @@
           "refId": "A"
         }
       ],
-      "title": "Kepler pilot: Node CPU package power (W)",
+      "title": "Kepler: Node CPU package power (W)",
       "type": "timeseries"
     },
     {
@@ -684,7 +684,7 @@
           "refId": "A"
         }
       ],
-      "title": "Kepler pilot: Top Pods by attributed CPU power (W)",
+      "title": "Kepler: Top Pods by attributed CPU power (W)",
       "type": "timeseries"
     },
     {
@@ -717,7 +717,7 @@
           "refId": "A"
         }
       ],
-      "title": "Kepler pilot: Node CPU package energy (kWh / 24h)",
+      "title": "Kepler: Node CPU package energy (kWh / 24h)",
       "transformations": [
         {
           "id": "organize",
@@ -760,7 +760,7 @@
           "refId": "A"
         }
       ],
-      "title": "Kepler pilot: Top Pods by attributed CPU energy (kWh / 24h)",
+      "title": "Kepler: Top Pods by attributed CPU energy (kWh / 24h)",
       "transformations": [
         {
           "id": "organize",

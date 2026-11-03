@@ -29,7 +29,10 @@ spec:
       hostUsers: true
       nodeSelector:
         kubernetes.io/os: linux
-        kubernetes.io/hostname: worker01
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       securityContext:
         privileged: true
         runAsNonRoot: false

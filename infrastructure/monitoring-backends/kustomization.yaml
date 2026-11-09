@@ -5,6 +5,7 @@ resources:
   - victoria-metrics.yaml
   - loki.yaml
   - tempo.yaml
+  - tempo-s3-credentials.yaml
   - grafana.yaml
   - httproute.yaml
   - dashboards

@@ -19,15 +19,37 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
-    # Cấu hình Single Binary cho Tempo
+    # Cấu hình Single Binary cho Tempo — S3-backed (Garage)
     tempo:
       repository: grafana/tempo
-      retention: 72h
+      retention: 720h   # 30 ngày, S3 rẻ hơn PVC nhiều
+      reportingEnabled: false
+      extraArgs:
+        "config.expand-env": "true"   # Bung ${VAR} trong storage config
+      extraEnv:
+        - name: TEMPO_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tempo-s3-credentials
+              key: access-key
+        - name: TEMPO_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tempo-s3-credentials
+              key: secret-key
       storage:
         trace:
-          backend: local
-          local:
-            path: /var/tempo/traces
+          backend: s3
+          wal:
+            path: /var/tempo/wal       # WAL vẫn nằm trên PVC
+          s3:
+            bucket: tempo-traces
+            endpoint: garage.garage.svc.cluster.local:3900
+            region: garage
+            access_key: ${TEMPO_S3_ACCESS_KEY}
+            secret_key: ${TEMPO_S3_SECRET_KEY}
+            insecure: true             # Garage serve HTTP, không TLS
+            forcepathstyle: true       # Bắt buộc cho S3-compatible non-AWS
       resources:
         requests:
           cpu: 50m
@@ -37,7 +59,7 @@ spec:
           memory: 512Mi
     persistence:
       enabled: true
-      size: 10Gi
+      size: 5Gi        # Chỉ cần cho WAL, traces đã lên S3
       storageClass: longhorn
     serviceAccount:
       create: true

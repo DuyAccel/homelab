@@ -1,0 +1,252 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "loki", "uid": "${logs_ds}" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green" }] }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Time" },
+            "properties": [
+              { "id": "custom.width", "value": 220 },
+              { "id": "displayName", "value": "Timestamp" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "namespace" },
+            "properties": [{ "id": "custom.width", "value": 160 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "pod" },
+            "properties": [{ "id": "custom.width", "value": 220 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "container" },
+            "properties": [{ "id": "custom.width", "value": 150 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "service_name" },
+            "properties": [{ "id": "custom.width", "value": 180 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "deployment_name" },
+            "properties": [{ "id": "custom.width", "value": 180 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "level" },
+            "properties": [
+              { "id": "custom.width", "value": 80 },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "value": { "error": { "color": "red", "text": "ERR" } } },
+                  { "type": "value", "value": { "warn": { "color": "orange", "text": "WRN" } } },
+                  { "type": "value", "value": { "info": { "color": "blue", "text": "INF" } } },
+                  { "type": "value", "value": { "debug": { "color": "gray", "text": "DBG" } } }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Line" },
+            "properties": [
+              { "id": "custom.filterable", "value": true },
+              { "id": "custom.cellOptions", "value": { "type": "auto", "wrapText": true } },
+              { "id": "links", "value": [
+                {
+                  "title": "View in Explore",
+                  "url": "/explore?left=${__data.fields[\"id\"]}"
+                }
+              ]}
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 20, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Time" }]
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "${logs_ds}" },
+          "editorMode": "code",
+          "expr": "{namespace=~\"$namespace\", pod=~\"$pod\", container=~\"$container\"} | json | line_format \"{{.namespace}} | {{.pod}} | {{.container}} | {{.service_name}} | {{.deployment_name}} | {{.level}} | {{.message}}\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Log Browser — $namespace",
+      "transformations": [
+        { "id": "filterFieldsByName", "options": { "include": { "names": ["Time", "Line"] } } }
+      ],
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${logs_ds}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green" },
+              { "color": "red", "value": 80 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+      "id": 2,
+      "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "title": "Log Rate — $namespace",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "${logs_ds}" },
+          "editorMode": "code",
+          "expr": "sum by (level) (count_over_time({namespace=~\"$namespace\", pod=~\"$pod\", container=~\"$container\"} | json | level != `` [$__auto]))",
+          "legendFormat": "{{level}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["logs", "observability"],
+  "templating": {
+    "list": [
+      {
+        "current": { "text": "loki", "value": "loki" },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Logs Datasource",
+        "name": "logs_ds",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "allValue": ".+",
+        "current": {},
+        "datasource": { "type": "loki", "uid": "${logs_ds}" },
+        "definition": "label_values(namespace)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Namespace",
+        "multi": true,
+        "name": "namespace",
+        "options": [],
+        "query": { "query": "label_values(namespace)", "refId": "Loki-namespace-Variable-Query" },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "current": {},
+        "datasource": { "type": "loki", "uid": "${logs_ds}" },
+        "definition": "label_values({namespace=~\"$namespace\"}, pod)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Pod",
+        "multi": true,
+        "name": "pod",
+        "options": [],
+        "query": { "query": "label_values({namespace=~\"$namespace\"}, pod)", "refId": "Loki-pod-Variable-Query" },
+        "refresh": 2,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "current": {},
+        "datasource": { "type": "loki", "uid": "${logs_ds}" },
+        "definition": "label_values({namespace=~\"$namespace\", pod=~\"$pod\"}, container)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Container",
+        "multi": true,
+        "name": "container",
+        "options": [],
+        "query": { "query": "label_values({namespace=~\"$namespace\", pod=~\"$pod\"}, container)", "refId": "Loki-container-Variable-Query" },
+        "refresh": 2,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {},
+        "hide": 0,
+        "label": "Search",
+        "name": "search",
+        "options": [],
+        "query": "",
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Log Explorer",
+  "uid": "homelab-log-explorer-gitops",
+  "version": 1,
+  "weekStart": ""
+}

@@ -60,6 +60,7 @@ spec:
       variant: distroless
     meshConfig:
       accessLogFile: /dev/stdout
+      enableTracing: true
       defaultConfig:
         gatewayTopology:
           numTrustedProxies: 2
@@ -85,6 +86,12 @@ spec:
               - content-type
               - location
               - set-cookie
+        - name: otel-tracing
+          opentelemetry:
+            port: 4317
+            service: k8s-monitoring-alloy-metrics.observability-stack.svc.cluster.local
+            resource_detectors:
+              environment: {}
     profile: ambient
     tolerations:
       - effect: NoSchedule

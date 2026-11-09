@@ -50,6 +50,23 @@ spec:
             secret_key: ${TEMPO_S3_SECRET_KEY}
             insecure: true             # Garage serve HTTP, không TLS
             forcepathstyle: true       # Bắt buộc cho S3-compatible non-AWS
+      metricsGenerator:
+        enabled: true
+        remoteWriteUrl: http://victoria-metrics-victoria-metrics-single-server.observability-stack.svc.cluster.local:8428/api/v1/write
+        storage:
+          path: /var/tempo/metrics-generator
+        traces_storage:
+          path: /var/tempo/traces-wal
+        processor:
+          service_graphs:
+            max_items: 10000
+          span_metrics:
+            enable_exemplars: true
+            dimensions:
+              - service.name
+              - http.method
+              - http.status_code
+              - deployment.environment.name
       resources:
         requests:
           cpu: 50m
@@ -59,7 +76,7 @@ spec:
           memory: 512Mi
     persistence:
       enabled: true
-      size: 5Gi        # Chỉ cần cho WAL, traces đã lên S3
+      size: 8Gi        # WAL + metrics-generator storage
       storageClass: longhorn
     serviceAccount:
       create: true

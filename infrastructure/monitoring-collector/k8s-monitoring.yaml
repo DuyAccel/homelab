@@ -35,11 +35,12 @@ spec:
         url: http://loki-gateway.observability-stack.svc.cluster.local:80/loki/api/v1/push
       tempo:
         type: otlp
-        url: http://tempo.observability-stack.svc.cluster.local:4317
+        url: tempo.observability-stack.svc.cluster.local:4317
         protocol: grpc
-        traces.enabled: true
-        logs.enabled: false
-        metrics.enabled: false
+        tls:
+          insecure: true
+        logs:
+          enabled: false
 
     clusterMetrics:
       enabled: true

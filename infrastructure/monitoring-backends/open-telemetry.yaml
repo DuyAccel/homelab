@@ -24,6 +24,8 @@ spec:
       name: otelcol-contrib
     replicaCount: 1
     fullnameOverride: otel-collector
+    clusterRole:
+      create: true
 
     ports:
       otlp:
@@ -161,7 +163,6 @@ spec:
             - name: http.method
               default: GET
             - name: http.status_code
-            - name: service.name
             - name: k8s.namespace.name
           exemplars:
             enabled: true

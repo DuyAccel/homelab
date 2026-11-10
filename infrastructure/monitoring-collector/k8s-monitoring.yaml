@@ -39,8 +39,6 @@ spec:
         protocol: grpc
         tls:
           insecure: true
-        logs:
-          enabled: false
 
     clusterMetrics:
       enabled: true

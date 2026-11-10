@@ -89,7 +89,7 @@ spec:
         - name: otel-tracing
           opentelemetry:
             port: 4317
-            service: k8s-monitoring-alloy-metrics.observability-stack.svc.cluster.local
+            service: otel-collector.observability-stack.svc.cluster.local
             resource_detectors:
               environment: {}
     profile: ambient

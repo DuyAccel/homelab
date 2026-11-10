@@ -8,3 +8,4 @@ resources:
   - cnpg.yaml
   - grafana.yaml
   - victoria-metrics.yaml
+  - opentelemetry.yaml

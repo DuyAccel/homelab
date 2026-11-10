@@ -33,12 +33,14 @@ spec:
       loki:
         type: loki
         url: http://loki-gateway.observability-stack.svc.cluster.local:80/loki/api/v1/push
+      # Traces đi qua otel-collector (xem infrastructure/monitoring-collector/otel-collector)
       tempo:
         type: otlp
-        url: tempo.observability-stack.svc.cluster.local:4317
+        url: otel-collector.observability-stack.svc.cluster.local:4317
         protocol: grpc
         tls:
           insecure: true
+        logs: { enabled: true }
 
     clusterMetrics:
       enabled: true
@@ -77,18 +79,9 @@ spec:
       collector: alloy-logs
       destinations: [loki]
 
+    # TẮT receiver traces của Alloy: trace pipeline nằm ở component riêng
     applicationObservability:
-      enabled: true
-      collector: alloy-metrics
-      destinations: [tempo]
-      receivers:
-        otlp:
-          grpc:
-            enabled: true
-            port: 4317
-          http:
-            enabled: true
-            port: 4318
+      enabled: false
 
     # Tắt OpenCost vì rất nặng
     costMetrics:

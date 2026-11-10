@@ -29,24 +29,21 @@ spec:
         datasources:
           - name: VictoriaMetrics
             type: prometheus
-            uid: victoriametrics
             url: http://victoria-metrics-victoria-metrics-single-server.observability-stack.svc.cluster.local:8428
             access: proxy
             isDefault: true
           - name: Loki
             type: loki
-            uid: loki
             url: http://loki.observability-stack.svc.cluster.local:3100
             access: proxy
           - name: Tempo
             type: tempo
-            uid: tempo
             url: http://tempo.observability-stack.svc.cluster.local:3200
             access: proxy
             jsonData:
               httpMethod: GET
               tracesToLogsV2:
-                datasourceUid: "loki"
+                datasourceUid: "Loki"
                 spanStartTimeShift: "-1h"
                 spanEndTimeShift: "1h"
                 tags:
@@ -57,7 +54,7 @@ spec:
                 filterByTraceID: true
                 filterBySpanID: true
               tracesToMetrics:
-                datasourceUid: "victoriametrics"
+                datasourceUid: "VictoriaMetrics"
                 spanStartTimeShift: "-1h"
                 spanEndTimeShift: "1h"
                 tags:
@@ -66,7 +63,7 @@ spec:
                     { key: "host.name", value: "host" },
                   ]
               serviceMap:
-                datasourceUid: "victoriametrics"
+                datasourceUid: "VictoriaMetrics"
     sidecar:
       dashboards:
         enabled: true

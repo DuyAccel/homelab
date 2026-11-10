@@ -172,7 +172,6 @@
   "templating": {
     "list": [
       {
-        "current": { "text": "loki", "value": "loki" },
         "hide": 2,
         "includeAll": false,
         "label": "Logs Datasource",
@@ -186,7 +185,7 @@
       {
         "allValue": ".+",
         "current": {},
-        "datasource": { "type": "loki", "uid": "${logs_ds}" },
+        "datasource": { "type": "loki", "uid": "Loki" },
         "definition": "label_values(namespace)",
         "hide": 0,
         "includeAll": true,
@@ -202,7 +201,7 @@
       {
         "allValue": ".+",
         "current": {},
-        "datasource": { "type": "loki", "uid": "${logs_ds}" },
+        "datasource": { "type": "loki", "uid": "Loki" },
         "definition": "label_values({namespace=~\"$namespace\"}, pod)",
         "hide": 0,
         "includeAll": true,
@@ -218,7 +217,7 @@
       {
         "allValue": ".+",
         "current": {},
-        "datasource": { "type": "loki", "uid": "${logs_ds}" },
+        "datasource": { "type": "loki", "uid": "Loki" },
         "definition": "label_values({namespace=~\"$namespace\", pod=~\"$pod\"}, container)",
         "hide": 0,
         "includeAll": true,

@@ -37,6 +37,7 @@ spec:
         type: otlp
         url: http://tempo.observability-stack.svc.cluster.local:4317
         protocol: grpc
+        tls.insecure: true
 
     clusterMetrics:
       enabled: true

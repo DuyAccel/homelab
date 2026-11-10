@@ -26,6 +26,21 @@ spec:
     fullnameOverride: otel-collector
     clusterRole:
       create: true
+      rules:
+        - apiGroups: [""]
+          resources:
+            - pods
+            - namespaces
+            - nodes
+          verbs: ["get", "list", "watch"]
+
+        - apiGroups: ["apps"]
+          resources:
+            - deployments
+            - replicasets
+            - statefulsets
+            - daemonsets
+          verbs: ["get", "list", "watch"]
 
     ports:
       otlp:

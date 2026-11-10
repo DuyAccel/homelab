@@ -22,10 +22,10 @@ spec:
     # Cấu hình Single Binary cho Tempo — S3-backed (Garage)
     tempo:
       repository: grafana/tempo
-      retention: 720h   # 30 ngày, S3 rẻ hơn PVC nhiều
+      retention: 720h # 30 ngày, S3 rẻ hơn PVC nhiều
       reportingEnabled: false
       extraArgs:
-        "config.expand-env": "true"   # Bung ${VAR} trong storage config
+        "config.expand-env": "true" # Bung ${VAR} trong storage config
       extraEnv:
         - name: TEMPO_S3_ACCESS_KEY
           valueFrom:
@@ -41,32 +41,17 @@ spec:
         trace:
           backend: s3
           wal:
-            path: /var/tempo/wal       # WAL vẫn nằm trên PVC
+            path: /var/tempo/wal # WAL vẫn nằm trên PVC
           s3:
             bucket: tempo-traces
             endpoint: garage.garage.svc.cluster.local:3900
             region: garage
             access_key: ${TEMPO_S3_ACCESS_KEY}
             secret_key: ${TEMPO_S3_SECRET_KEY}
-            insecure: true             # Garage serve HTTP, không TLS
-            forcepathstyle: true       # Bắt buộc cho S3-compatible non-AWS
+            insecure: true # Garage serve HTTP, không TLS
+            forcepathstyle: true # Bắt buộc cho S3-compatible non-AWS
       metricsGenerator:
-        enabled: true
-        remoteWriteUrl: http://victoria-metrics-victoria-metrics-single-server.observability-stack.svc.cluster.local:8428/api/v1/write
-        storage:
-          path: /var/tempo/metrics-generator
-        traces_storage:
-          path: /var/tempo/traces-wal
-        processor:
-          service_graphs:
-            max_items: 10000
-          span_metrics:
-            enable_exemplars: true
-            dimensions:
-              - service.name
-              - http.method
-              - http.status_code
-              - deployment.environment.name
+        enabled: false
       resources:
         requests:
           cpu: 50m
@@ -76,7 +61,7 @@ spec:
           memory: 512Mi
     persistence:
       enabled: true
-      size: 8Gi        # WAL + metrics-generator storage
+      size: 8Gi # WAL + metrics-generator storage
       storageClass: longhorn
     serviceAccount:
       create: true

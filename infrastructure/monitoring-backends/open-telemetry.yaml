@@ -51,6 +51,12 @@ spec:
         enabled: false
       zipkin:
         enabled: false
+
+      # disable default name to rename port as istio port naming convetion
+      otlp:
+        enabled: false
+      otlp-http:
+        enabled: false
       grpc-otlp:
         enabled: true
         containerPort: 4317

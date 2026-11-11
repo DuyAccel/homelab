@@ -228,13 +228,3 @@ spec:
             receivers: [spanmetrics]
             processors: [batch]
             exporters: [prometheusremotewrite/victoriametrics]
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Service
-              name: otel-collector
-            patch: |-
-              - op: add
-                path: /metadata/labels/istio.io~1global
-                value: "true"

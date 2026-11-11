@@ -53,30 +53,3 @@ spec:
   selector:
     app.kubernetes.io/instance: tempo
     app.kubernetes.io/name: tempo
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: otel-collector
-  namespace: observability-stack
-  labels:
-    istio.io/global: "true"
-spec:
-  ports:
-    - name: metrics
-      port: 8888
-      protocol: TCP
-      targetPort: 8888
-    - appProtocol: grpc
-      name: grpc-otlp
-      port: 4317
-      protocol: TCP
-      targetPort: 4317
-    - name: http-otlp
-      port: 4318
-      protocol: TCP
-      targetPort: 4318
-  selector:
-    app.kubernetes.io/instance: otel-collector
-    app.kubernetes.io/name: opentelemetry-collector
-    component: standalone-collector

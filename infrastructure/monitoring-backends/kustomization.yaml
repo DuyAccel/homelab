@@ -6,7 +6,6 @@ resources:
   - loki.yaml
   - tempo.yaml
   - tempo-s3-credentials.yaml
-  - open-telemetry.yaml
   - grafana.yaml
   - httproute.yaml
   - dashboards

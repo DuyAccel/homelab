@@ -68,11 +68,11 @@ spec:
       protocol: TCP
       targetPort: 8888
     - appProtocol: grpc
-      name: otlp
+      name: grpc-otlp
       port: 4317
       protocol: TCP
       targetPort: 4317
-    - name: otlp-http
+    - name: http-otlp
       port: 4318
       protocol: TCP
       targetPort: 4318

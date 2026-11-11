@@ -43,6 +43,14 @@ spec:
           verbs: ["get", "list", "watch"]
 
     ports:
+      jaeger-compact:
+        enabled: false
+      jaeger-thrift:
+        enabled: false
+      jaeger-grpc:
+        enabled: false
+      zipkin:
+        enabled: false
       otlp:
         enabled: true
         containerPort: 4317
@@ -214,3 +222,13 @@ spec:
             receivers: [spanmetrics]
             processors: [batch]
             exporters: [prometheusremotewrite/victoriametrics]
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: otel-collector
+            patch: |-
+              - op: add
+                path: /metadata/labels/istio.io~1global
+                value: "true"
